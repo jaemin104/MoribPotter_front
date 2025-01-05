@@ -61,6 +61,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/g_dorm.webp
     - assets/s_dorm.webp
     - assets/h_dorm.webp
@@ -71,6 +72,8 @@ flutter:
     - assets/r_flag.webp
     - assets/background.webp
     - assets/sorting_hat.webp
+    - assets/self_study_background.webp
+    - assets/potion_exam_background.webp
 
   fonts:
     - family: CustomFont
