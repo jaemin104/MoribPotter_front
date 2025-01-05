@@ -3,6 +3,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:project814/screens/logout_page.dart';
 import 'screens/home_page.dart';
 import 'screens/login_page.dart';
+import 'screens/test_page.dart';
 import 'screens/survey_page.dart';
 import 'screens/assign_page.dart';
 import 'screens/self_study_page.dart' as self_study;
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/survey',
+      initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const HomePage(), // 홈 화면
@@ -37,10 +38,9 @@ class MyApp extends StatelessWidget {
             nickname: args?['nickname'], // nickname 전달
           );
         },
+        '/test' : (context) => const TestPage(),
         '/survey' : (context) => const SurveyPage(), // 설문조사
         '/assign' : (context) => const AssignPage(), // 기숙사 배정
-        '/survey': (context) => const SurveyPage(), // 설문조사
-        '/assign': (context) => const AssignPage(), // 기숙사 배정
         '/selfStudy': (context) => const self_study.SelfStudyPage(), //자습실
         '/textbookPage': (context) => const TextbookPage(),
         '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
