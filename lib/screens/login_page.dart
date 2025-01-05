@@ -1,58 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  // 서버의 Google 로그인 API URL
-  final String loginUrl = 'http://143.248.222.21:3000/auth/google';
+  Future<void> _loginWithKakao(BuildContext context) async {
+    try {
+      // 기존 세션 초기화
+      //await UserApi.instance.logout();
+      // 카카오톡 앱이 설치되어 있다면 앱으로 로그인
 
-  // URL 실행 함수
-  Future<void> _launchLoginUrl() async {
-    if (await canLaunch(loginUrl)) {
-      await launch(loginUrl, forceWebView: false, forceSafariVC: false);
-    } else {
-      throw 'Could not launch $loginUrl';
+      if (await isKakaoTalkInstalled()) {
+        await UserApi.instance.loginWithKakaoTalk();
+      } else {
+        // 카카오톡 앱이 설치되지 않은 경우, 계정 로그인
+        await UserApi.instance.loginWithKakaoAccount();
+      }
+
+      // 사용자 정보 가져오기
+      User user = await UserApi.instance.me();
+      Navigator.pushNamed(context, '/logout', arguments: {
+        'nickname': user.kakaoAccount?.profile?.nickname,
+      });
+    } catch (e) {
+      // 로그인 실패 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('카카오 로그인 실패: $e')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue, Colors.purple],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: GestureDetector(
-            onTap: _launchLoginUrl,
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 5,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.login,
-                  size: 50,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-          ),
+      appBar: AppBar(title: const Text('카카오 로그인')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => _loginWithKakao(context),
+          child: const Text('카카오 로그인'),
         ),
       ),
     );
