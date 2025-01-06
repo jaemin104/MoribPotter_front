@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../user_state.dart'; // UserState를 불러옵니다.
+import 'package:provider/provider.dart'; // Provider를 사용합니다.
 import 'self_study_page.dart'; // SelfStudyPage를 불러옵니다.
 import 'potion_exam_page.dart'; // PotionExamPage를 불러옵니다.
 
@@ -7,13 +9,17 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final house = ModalRoute.of(context)!.settings.arguments as String;
+    // 전역 상태에서 기숙사 정보 가져오기
+    final userState = Provider.of<UserState>(context, listen: false);
+    final dorm = userState.dorm;
+
+    // 배경 이미지를 기숙사에 따라 설정
     final backgroundImage = {
-      "gryffindor": "assets/g_dorm.webp",
-      "ravenclaw": "assets/r_dorm.webp",
-      "slytherin": "assets/s_dorm.webp",
-      "hufflepuff": "assets/h_dorm.webp",
-    }[house];
+      "g_dorm": "assets/g_dorm.webp",
+      "r_dorm": "assets/r_dorm.webp",
+      "s_dorm": "assets/s_dorm.webp",
+      "h_dorm": "assets/h_dorm.webp",
+    }[dorm];
 
     return Scaffold(
       body: Stack(

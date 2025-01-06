@@ -1,35 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Provider 사용
+import '../user_state.dart'; // 전역 상태 클래스
 
 class AssignPage extends StatelessWidget {
   const AssignPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final house = ModalRoute.of(context)!.settings.arguments as String;
+    // 전역변수 가져오기
+    final userState = Provider.of<UserState>(context, listen: false);
+    // 전역 변수에서 dorm 정보 가져오기
+    final dorm = userState.dorm; // 기숙사 정보
+    final nickname = userState.nickname; // 닉네임 정보
+
+    // 기숙사 상세 정보
     final houseDetails = {
-      "gryffindor": {
+      "g_dorm": {
         "name": "아름핀도르",
         "description": "그 이름에 걸맞는 용기를\n지닌 아이들을 가르치리라",
         "flag": "assets/g_flag.webp",
       },
-      "ravenclaw": {
+      "r_dorm": {
         "name": "사랑클로",
         "description": "끝없는 지혜를 추구하는\n이들의 지성이 빛날 것이다",
         "flag": "assets/r_flag.webp",
       },
-      "slytherin": {
+      "s_dorm": {
         "name": "진리데린",
         "description": "야망과 결단으로\n위대한 운명을 설계하리라",
         "flag": "assets/s_flag.webp",
       },
-      "hufflepuff": {
+      "h_dorm": {
         "name": "성실푸프",
         "description": "언제나 정의와 충성심을\n품은 이들의 쉼터가 되리라",
         "flag": "assets/h_flag.webp",
       },
     };
 
-    final houseData = houseDetails[house]!;
+    // dorm에 해당하는 상세 정보 가져오기
+    final houseData = houseDetails[dorm]!;
 
     return Scaffold(
       body: Stack(
@@ -43,7 +52,7 @@ class AssignPage extends StatelessWidget {
               ),
             ),
           ),
-          // 다른 요소들
+          // 메인 콘텐츠
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -77,14 +86,14 @@ class AssignPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
+                // 기숙사 이동 버튼
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacementNamed(
                         context,
-                        '/home',
-                        arguments: house,
+                        '/home', // home_page로 이동
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -104,7 +113,6 @@ class AssignPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // 버튼
               ],
             ),
           ),
