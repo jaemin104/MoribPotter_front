@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'real_exam_page.dart';
 
 class PotionExamPage extends StatelessWidget {
   const PotionExamPage({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class PotionExamPage extends StatelessWidget {
                   width: 40, // 원의 너비
                   height: 40, // 원의 높이
                   decoration: BoxDecoration(
-                    color: Colors.black, // 원의 배경색
+                    color: Colors.black.withOpacity(0.7), // 원의 배경색
                     shape: BoxShape.circle, // 원 모양
                   ),
                   child: Icon(
@@ -39,9 +40,9 @@ class PotionExamPage extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: Alignment(0.0, 0.5), // x, y 위치 (비율)
+              alignment: Alignment(0.0, 0.45), // x, y 위치 (비율)
               child: Text(
-                '포션 시험을 시작하려면\n   칠판을 클릭하세요',
+                '포션 시험을 시작하려면\n    칠판을 클릭하세요',
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -62,7 +63,10 @@ class PotionExamPage extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   print('Button pressed'); // 디버깅 로그
-                  Navigator.pushNamed(context, '/textbookPage');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RealExamPage()),
+                  );
                 },
                 child: Container(
                   width: 100,
