@@ -88,24 +88,26 @@ class _RealExamPageState extends State<RealExamPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  '시험 문제',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black, // 텍스트 색상
-                  ),
-                ),
-                const SizedBox(height: 10), // 텍스트 사이 간격
+                // const SizedBox(height: 20),
+                // const Text(
+                //   '시험 문제',
+                //   style: TextStyle(
+                //       fontSize: 20,
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.black, // 텍스트 색상
+                //       fontFamily: 'CustomFont'),
+                // ),
+                const Spacer(), // 텍스트 사이 간격
                 Text(
                   _currentQuestion,
                   style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black, // 텍스트 색상
-                  ),
+                      fontSize: 16,
+                      color: Colors.black, // 텍스트 색상
+                      fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                const Spacer(), // 버튼과 텍스트 사이 간격 늘리기
+                //const Spacer(), // 버튼과 텍스트 사이 간격 늘리기
+                const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // 다이얼로그 닫기
@@ -114,12 +116,13 @@ class _RealExamPageState extends State<RealExamPage> {
                   child: const Text(
                     '닫기',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue, // 닫기 버튼 색상
-                    ),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // 닫기 버튼 색상
+                        fontFamily: 'CustomFont'),
                   ),
                 ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
