@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  Future<void> _loginWithKakao(BuildContext context) async {
+  Future<void> _startKakaoLogin(BuildContext context) async {
     try {
-      // 기존 세션 초기화
-      //await UserApi.instance.logout();
-      // 카카오톡 앱이 설치되어 있다면 앱으로 로그인
-
-      if (await isKakaoTalkInstalled()) {
-        await UserApi.instance.loginWithKakaoTalk();
+      // 서버의 /auth/kakao로 요청
+      final url = Uri.parse('http://172.10.7.89/auth/kakao'); // 서버 주소
+      if (await canLaunchUrl(url)) {
+        // 카카오 인증 URL로 리다이렉트
+        await launchUrl(url);
       } else {
-        // 카카오톡 앱이 설치되지 않은 경우, 계정 로그인
-        await UserApi.instance.loginWithKakaoAccount();
+        throw Exception('카카오 인증 URL을 열 수 없습니다.');
       }
-
-      // 사용자 정보 가져오기
-      User user = await UserApi.instance.me();
-      Navigator.pushNamed(context, '/logout', arguments: {
-        'nickname': user.kakaoAccount?.profile?.nickname,
-      });
     } catch (e) {
-      // 로그인 실패 처리
+      // 에러 처리
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('카카오 로그인 실패: $e')),
       );
@@ -36,7 +28,7 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(title: const Text('카카오 로그인')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => _loginWithKakao(context),
+          onPressed: () => _startKakaoLogin(context),
           child: const Text('카카오 로그인'),
         ),
       ),
