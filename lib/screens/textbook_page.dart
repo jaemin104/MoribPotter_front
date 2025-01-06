@@ -109,7 +109,7 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '브라키움 엠멘도',
         'recipe': [
           {
-            'text': '기린의 뼈 15g을\n10초 안에 넣으시오.',
+            'text': '기린의 목뼈 15g을\n10초 안에 넣으시오.',
             'image': 'assets/ingredients/giraffe_bone.png'
           },
           {

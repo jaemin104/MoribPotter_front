@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'exam_result_page.dart';
 
 class RealExamPage extends StatefulWidget {
   const RealExamPage({Key? key}) : super(key: key);
@@ -10,30 +11,129 @@ class RealExamPage extends StatefulWidget {
 }
 
 class _RealExamPageState extends State<RealExamPage> {
-  Timer? _timer; // nullable로 변경하여 초기 상태 관리
-  int _remainingTime = 0; // 남은 시간 (초)
-  String _currentQuestion = ''; // 현재 문제
+  Timer? _timer;
+  int _remainingTime = 0;
+  String _currentQuestion = '';
+  int _clickCount = 0;
 
   final List<String> _examQuestions = [
-    '1분 안에\n무슨 포션,\n무슨 포션,\n무슨 포션을 만드시오.',
-    '2분 안에\n무슨 포션,\n무슨 포션,\n무슨 포션을 만드시오.',
-    '3분 안에\n무슨 포션,\n무슨 포션,\n무슨 포션을 만드시오.',
-    '4분 안에\n무슨 포션,\n무슨 포션,\n무슨 포션을 만드시오.',
-    '5분 안에\n무슨 포션,\n무슨 포션,\n무슨 포션을 만드시오.',
+    '1분 안에\n아라니아 액서메이 포션,\n아라니아 액서메이 포션,\n아라니아 액서메이 포션을\n만드시오.',
+    '2분 안에\n아라니아 액서메이 포션,\n아라니아 액서메이 포션,\n아라니아 액서메이 포션을\n만드시오.',
+    '3분 안에\n아라니아 액서메이 포션,\n아라니아 액서메이 포션,\n아라니아 액서메이 포션을\n만드시오.',
+  ];
+
+  final List<Map<String, dynamic>> _potionIngredeints = [
+    {
+      'top': 350.0,
+      'left': 55.0,
+      'ingredient': '다이아몬드',
+      'image': 'assets/ingredients/diamond.png',
+    },
+    {
+      'top': 350.0,
+      'left': 137.0,
+      'ingredient': '천사의 날개',
+      'image': 'assets/ingredients/angel_wing.png',
+    },
+    {
+      'top': 345.0,
+      'left': 220.0,
+      'ingredient': '드래곤의 알',
+      'image': 'assets/ingredients/dragon_egg.png',
+    },
+    {
+      'top': 350.0,
+      'left': 305.0,
+      'ingredient': '드래곤의 피',
+      'image': 'assets/ingredients/dragon_blood.jpeg',
+    },
+    {
+      'top': 345.0,
+      'left': 385.0,
+      'ingredient': '에메랄드',
+      'image': 'assets/ingredients/emerald.png',
+    },
+    {
+      'top': 480.0,
+      'left': 55.0,
+      'ingredient': '기린의 목뼈',
+      'image': 'assets/ingredients/giraffe_bone.png',
+    },
+    {
+      'top': 480.0,
+      'left': 137.0,
+      'ingredient': '기린의 혀',
+      'image': 'assets/ingredients/giraffe_tongue.png',
+    },
+    {
+      'top': 480.0,
+      'left': 220.0,
+      'ingredient': '약초',
+      'image': 'assets/ingredients/herb.png',
+    },
+    {
+      'top': 470.0,
+      'left': 303.0,
+      'ingredient': '마법의 물',
+      'image': 'assets/ingredients/magic_water.png',
+    },
+    {
+      'top': 480.0,
+      'left': 385.0,
+      'ingredient': '루비',
+      'image': 'assets/ingredients/ruby.png',
+    },
+    {
+      'top': 620.0,
+      'left': 55.0,
+      'ingredient': '드래곤의 뿔',
+      'image': 'assets/ingredients/dragon_horn.png',
+    },
+    {
+      'top': 620.0,
+      'left': 137.0,
+      'ingredient': '달팽이 진액',
+      'image': 'assets/ingredients/snail_essence.png',
+    },
+    {
+      'top': 625.0,
+      'left': 215.0,
+      'ingredient': '뱀 껍질',
+      'image': 'assets/ingredients/snake_skin.jpeg',
+    },
+    {
+      'top': 620.0,
+      'left': 303.0,
+      'ingredient': '뱀의 혀',
+      'image': 'assets/ingredients/snake_tongue.png',
+    },
+    {
+      'top': 620.0,
+      'left': 385.0,
+      'ingredient': '거미 다리',
+      'image': 'assets/ingredients/spider_leg.png',
+    },
+  ];
+
+  // 버튼 텍스트 목록
+  final List<String> _buttonTexts = [
+    '첫 번째 포션\n   제출하기',
+    '두 번째 포션\n   제출하기',
+    '세 번째 포션\n   제출하기',
   ];
 
   @override
   void initState() {
     super.initState();
-    _selectRandomQuestion(); // 랜덤 문제 선택
+    _selectRandomQuestion();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showCustomDialog(); // 페이지 로드 후 다이얼로그 표시
+      _showCustomDialog();
     });
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // null 체크 후 타이머 종료
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -42,27 +142,25 @@ class _RealExamPageState extends State<RealExamPage> {
     final randomQuestion =
         _examQuestions[random.nextInt(_examQuestions.length)];
 
-    // 문제에서 시간을 파싱 (예: "1분 안에" -> 1분)
     final timeMatch = RegExp(r'(\d+)분').firstMatch(randomQuestion);
     if (timeMatch != null) {
-      final timeInMinutes = int.parse(timeMatch.group(1)!); // "1"을 정수로 변환
+      final timeInMinutes = int.parse(timeMatch.group(1)!);
       setState(() {
         _currentQuestion = randomQuestion;
-        _remainingTime = timeInMinutes * 60; // 초로 변환
+        _remainingTime = timeInMinutes * 60;
       });
     }
   }
 
   void _startTimer() {
-    _timer?.cancel(); // null 체크 후 기존 타이머 취소
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingTime > 0) {
         setState(() {
           _remainingTime--;
         });
       } else {
-        timer.cancel(); // 시간이 끝나면 타이머 취소
-        // 시간 초과 처리 (필요 시 추가)
+        timer.cancel();
       }
     });
   }
@@ -72,57 +170,46 @@ class _RealExamPageState extends State<RealExamPage> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent, // 다이얼로그 배경 투명
+          backgroundColor: Colors.transparent,
           child: Container(
-            width: 500, // 다이얼로그 너비
-            height: 250, // 다이얼로그 높이
+            width: 500,
+            height: 250,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               image: const DecorationImage(
-                image: AssetImage(
-                    "assets/exam_problem_background.png"), // 배경 이미지 경로
-                fit: BoxFit.cover, // 이미지 채우기
+                image: AssetImage("assets/exam_problem_background.png"),
+                fit: BoxFit.cover,
               ),
-              borderRadius: BorderRadius.circular(15), // 테두리 둥글게
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // const SizedBox(height: 20),
-                // const Text(
-                //   '시험 문제',
-                //   style: TextStyle(
-                //       fontSize: 20,
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.black, // 텍스트 색상
-                //       fontFamily: 'CustomFont'),
-                // ),
-                const Spacer(), // 텍스트 사이 간격
+                const SizedBox(height: 30),
                 Text(
                   _currentQuestion,
                   style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black, // 텍스트 색상
+                      fontSize: 18,
+                      color: Colors.black,
                       fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                //const Spacer(), // 버튼과 텍스트 사이 간격 늘리기
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // 다이얼로그 닫기
-                    _startTimer(); // 다이얼로그 닫힌 후 타이머 시작
+                    Navigator.of(context).pop();
+                    _startTimer();
                   },
                   child: const Text(
                     '닫기',
                     style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black, // 닫기 버튼 색상
+                        color: Colors.black,
                         fontFamily: 'CustomFont'),
                   ),
                 ),
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
               ],
             ),
           ),
@@ -131,62 +218,55 @@ class _RealExamPageState extends State<RealExamPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // 약병 아이콘의 위치와 정보를 설정
-    final List<Map<String, dynamic>> potionIcons = [
-      {'top': 160.0, 'left': 5.0, 'ingredient': '드래곤의 뿔'},
-      {'top': 250.0, 'left': 200.0, 'ingredient': '블루 포션 재료'},
-      {'top': 300.0, 'left': 300.0, 'ingredient': '그린 포션 재료'},
-    ];
-
-    // 다이얼로그를 표시하는 함수
-    void showIngredientDialog(
-        BuildContext context, double top, double left, String ingredient) {
-      showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: '닫기',
-        barrierColor: Colors.black54, // 다이얼로그 배경 어둡게
-        transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (context, animation1, animation2) {
-          return Stack(
-            children: [
-              Positioned(
-                top: top,
-                left: left,
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      ingredient,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'CustomFont',
-                        color: Colors.black,
+  // 다이얼로그를 표시하는 함수
+  void showIngredientDialog(
+      BuildContext context, double top, double left, String ingredient) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '닫기',
+      barrierColor: Colors.black54, // 다이얼로그 배경 어둡게
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation1, animation2) {
+        return Stack(
+          children: [
+            Positioned(
+              top: top,
+              left: left,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        spreadRadius: 1,
                       ),
+                    ],
+                  ),
+                  child: Text(
+                    ingredient,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'CustomFont',
+                      color: Colors.black,
                     ),
                   ),
                 ),
               ),
-            ],
-          );
-        },
-      );
-    }
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -194,75 +274,142 @@ class _RealExamPageState extends State<RealExamPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/potion_shelf2.png"), // 배경 이미지 경로
-                fit: BoxFit.cover, // 화면을 채우도록 설정
+                image: AssetImage("assets/potion_shelf5.jpg"),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          ...potionIcons.map((potion) {
+
+          // DragTarget (냄비)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: DragTarget<String>(
+              builder: (context, candidateData, rejectedData) {
+                return Image.asset(
+                  'assets/potion_pot.png',
+                  width: 300,
+                  height: 300,
+                  fit: BoxFit.cover,
+                );
+              },
+              onAccept: (data) {
+                // 현재 표시 중인 스낵바 닫기
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                // 새로운 스낵바 표시
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('$data 추가됨!'),
+                    duration: const Duration(seconds: 1), // 스낵바 표시 시간 조정
+                  ),
+                );
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 100, // 원하는 Y 위치 (위에서 400픽셀)
+            left: 160, // 원하는 X 위치 (왼쪽에서 100픽셀)
+            child: ElevatedButton(
+              onPressed: () {
+                if (_clickCount < 2) {
+                  setState(() {
+                    _clickCount++;
+                  });
+                } else {
+                  // 세 번째 클릭 시 페이지 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ExamResultPage(),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 12), // 버튼 크기 조정
+                backgroundColor: Colors.black.withOpacity(0.7),
+              ),
+              child: Text(
+                _buttonTexts[_clickCount], // 클릭 횟수에 따라 텍스트 변경
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurpleAccent,
+                  fontFamily: 'CustomFont',
+                ),
+              ),
+            ),
+          ),
+          // Draggable 아이콘 배치
+          ..._potionIngredeints.map((ingredient) {
             return Positioned(
-              top: potion['top'],
-              left: potion['left'],
+              top: ingredient['top'],
+              left: ingredient['left'],
               child: GestureDetector(
                 onTap: () {
                   showIngredientDialog(
                     context,
-                    potion['top'],
-                    potion['left'],
-                    potion['ingredient'],
-                  ); // 클릭 시 다이얼로그 표시
+                    ingredient['top'],
+                    ingredient['left'],
+                    ingredient['ingredient'],
+                  );
                 },
-                child: const Icon(
-                  Icons.info,
-                  color: Colors.white,
-                  size: 30,
+                child: Draggable<String>(
+                  data: ingredient['ingredient'],
+                  feedback: Material(
+                    color: Colors.transparent,
+                    child: Image.asset(
+                      ingredient['image'],
+                      width: 50,
+                      height: 50,
+                    ),
+                  ),
+                  childWhenDragging: const SizedBox.shrink(),
+                  child: Image.asset(
+                    ingredient['image'],
+                    width: 50,
+                    height: 50,
+                  ),
                 ),
               ),
             );
           }).toList(),
-          // AppBar 커스텀
+          // AppBar
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: AppBar(
-              backgroundColor: Colors.transparent, // AppBar 배경 투명
-              elevation: 0, // 그림자 제거
-              centerTitle: true, // 타이틀 중앙 정렬
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
               leading: IconButton(
                 icon:
                     const Icon(Icons.arrow_back, color: Colors.white, size: 30),
                 onPressed: () {
-                  Navigator.pop(context); // 이전 페이지로 이동
+                  Navigator.pop(context);
                 },
-              ),
-              title: Text(
-                '${_remainingTime ~/ 60}분 ${_remainingTime % 60}초',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'CustomFont'),
               ),
               actions: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 10), // 오른쪽 여백 추가
+                  padding: const EdgeInsets.only(right: 10),
                   child: GestureDetector(
                     onTap: () {
-                      _showCustomDialog(); // 다이얼로그 열기
+                      _showCustomDialog();
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8), // 내부 여백
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7), // 버튼 배경색
-                        borderRadius: BorderRadius.circular(20), // 버튼 모서리 둥글게
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text(
                         '문제 보기',
                         style: TextStyle(
-                          color: Colors.white, // 텍스트 색상
-                          fontSize: 16, // 텍스트 크기
+                          color: Colors.white,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'CustomFont',
                         ),
@@ -273,14 +420,20 @@ class _RealExamPageState extends State<RealExamPage> {
               ],
             ),
           ),
-          // 하단 이미지
           Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              'assets/potion_pot2.png',
-              width: 300,
-              height: 150,
-              fit: BoxFit.cover,
+            alignment: Alignment.topCenter, // 화면 가운데 정렬
+            child: Padding(
+              padding: const EdgeInsets.only(top: 100.0), // 위에서 80 픽셀 추가
+              child: Text(
+                '${_remainingTime ~/ 60}분 ${_remainingTime % 60}초',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'CustomFont',
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],

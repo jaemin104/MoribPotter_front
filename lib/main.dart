@@ -12,6 +12,7 @@ import 'screens/self_study_page.dart' as self_study;
 import 'screens/textbook_page.dart';
 import 'screens/potion_exam_page.dart' as potion_exam;
 import 'screens/real_exam_page.dart';
+import 'screens/exam_result_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login',
+      initialRoute: '/survey',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const HomePage(), // 홈 화면
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         '/textbookPage': (context) => const TextbookPage(),
         '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
         '/realExamPage': (context) => const RealExamPage(),
+        '/examResultPage': (context) => const ExamResultPage(),
       },
     );
   }

@@ -164,14 +164,13 @@ class _SurveyPageState extends State<SurveyPage> {
                   // 선택지 버튼
                   ...List.generate(
                     questionData["choices"].length,
-                        (index) {
+                    (index) {
                       final choice = questionData["choices"][index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                            Colors.black.withOpacity(0.7),
+                            backgroundColor: Colors.black.withOpacity(0.7),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                               vertical: 10,
