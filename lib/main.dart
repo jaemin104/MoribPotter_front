@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:project814/screens/logout_page.dart';
 import 'screens/home_page.dart';
 import 'screens/login_page.dart';
+import 'screens/logout_page.dart';
 import 'screens/test_page.dart';
 import 'screens/survey_page.dart';
 import 'screens/assign_page.dart';
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/survey',
+      initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const HomePage(), // 홈 화면
