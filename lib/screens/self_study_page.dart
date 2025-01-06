@@ -16,6 +16,16 @@ class SelfStudyPage extends StatelessWidget {
         ),
         child: Stack(
           children: [
+            AppBar(
+              backgroundColor: Colors.transparent, // AppBar 배경 투명
+              elevation: 0, // 그림자 제거
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                onPressed: () {
+                  Navigator.pop(context); // 이전 페이지로 이동
+                },
+              ),
+            ),
             Align(
               alignment: Alignment(0.0, 0.25), // x, y 위치 (비율)
               child: Text(
@@ -48,7 +58,7 @@ class SelfStudyPage extends StatelessWidget {
                   color: Colors.transparent,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

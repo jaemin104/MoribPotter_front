@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  kakao_flutter_sdk: ^1.3.1
+  kakao_flutter_sdk: ^1.9.6
   http: ^1.2.2
   url_launcher: ^6.0.20
 
@@ -73,8 +73,9 @@ flutter:
     - assets/r_flag.webp
     - assets/background.webp
     - assets/sorting_hat.webp
-    - assets/self_study_background.webp
     - assets/potion_exam_background.webp
+    - assets/potions/
+    - assets/ingredients/
 
   fonts:
     - family: CustomFont

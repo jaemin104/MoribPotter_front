@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
               height: 80,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // 버튼 배경색
+                  backgroundColor: Colors.black.withOpacity(0.7), // 버튼 배경색
                   foregroundColor: Colors.deepPurpleAccent, // 텍스트 색상
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
               height: 80,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // 버튼 배경색
+                  backgroundColor: Colors.black.withOpacity(0.7), // 버튼 배경색
                   foregroundColor: Colors.deepPurpleAccent, // 텍스트 색상
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,

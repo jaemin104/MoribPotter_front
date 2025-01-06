@@ -77,25 +77,35 @@ class AssignPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        '/home',
+                        arguments: house,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black.withOpacity(0.7), // 버튼 배경색
+                      foregroundColor: Colors.deepPurpleAccent, // 텍스트 색상
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                    ),
+                    child: const Text(
+                      "기숙사로 이동",
+                      style: TextStyle(
+                          fontFamily: 'CustomFont',
+                          color: Colors.deepPurpleAccent,
+                          fontSize: 20),
+                    ),
+                  ),
+                ),
                 // 버튼
               ],
-            ),
-          ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/home',
-                  arguments: house,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              ),
-              child: const Text("홈 화면으로 이동"),
             ),
           ),
         ],

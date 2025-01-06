@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(), // 기존 로그인 화면
         '/logout': (context) {
           // arguments 수신
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final args = ModalRoute.of(context)?.settings.arguments
+              as Map<String, dynamic>?;
           return LogoutPage(
             nickname: args?['nickname'], // nickname 전달
           );
