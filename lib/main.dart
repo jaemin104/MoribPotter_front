@@ -32,13 +32,14 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(), // 기존 로그인 화면
         '/logout': (context) {
           // arguments 수신
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final args = ModalRoute.of(context)?.settings.arguments
+              as Map<String, dynamic>?;
           return LogoutPage(
             nickname: args?['nickname'], // nickname 전달
           );
         },
-        '/survey' : (context) => const SurveyPage(), // 설문조사
-        '/assign' : (context) => const AssignPage(), // 기숙사 배정
+        '/survey': (context) => const SurveyPage(), // 설문조사
+        '/assign': (context) => const AssignPage(), // 기숙사 배정
         '/survey': (context) => const SurveyPage(), // 설문조사
         '/assign': (context) => const AssignPage(), // 기숙사 배정
         '/selfStudy': (context) => const self_study.SelfStudyPage(), //자습실
