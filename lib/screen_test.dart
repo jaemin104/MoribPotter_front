@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/textbook_page.dart'; // TextbookPage를 import합니다.
+import 'screens/real_exam_page.dart';
 
 void main() {
   runApp(const ScreenTestApp());
@@ -15,7 +15,7 @@ class ScreenTestApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const TextbookPage(), // TextbookPage를 테스트합니다.
+      home: const RealExamPage(),
       debugShowCheckedModeBanner: false,
     );
   }
