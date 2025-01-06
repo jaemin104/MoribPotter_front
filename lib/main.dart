@@ -12,6 +12,7 @@ import 'screens/self_study_page.dart' as self_study;
 import 'screens/textbook_page.dart';
 import 'screens/potion_exam_page.dart' as potion_exam;
 import 'screens/real_exam_page.dart';
+import 'screens/leaderboard_page.dart';
 import 'screens/exam_result_page.dart';
 
 void main() {
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         '/textbookPage': (context) => const TextbookPage(),
         '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
         '/realExamPage': (context) => const RealExamPage(),
+        '/leaderboard' : (context) => const LeaderboardPage(),
         '/examResultPage': (context) => const ExamResultPage(),
       },
     );

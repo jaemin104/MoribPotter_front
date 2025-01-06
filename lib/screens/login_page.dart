@@ -10,12 +10,16 @@ class LoginPage extends StatelessWidget {
 
   Future<void> _loginWithKakao(BuildContext context) async {
     try {
+      await UserApi.instance.loginWithKakaoAccount();
+
       // 카카오톡 앱 로그인 또는 계정 로그인
+      /*
       if (await isKakaoTalkInstalled()) {
         await UserApi.instance.loginWithKakaoTalk();
       } else {
         await UserApi.instance.loginWithKakaoAccount();
       }
+      */
 
       // 사용자 정보 가져오기
       User user = await UserApi.instance.me();
@@ -44,7 +48,7 @@ class LoginPage extends StatelessWidget {
         if (responseData['status'] == 'existing_user') {
           // 기존 사용자인 경우
           userState.setDorm(responseData['dorm']); // 서버에서 받은 dorm 정보 설정장
-          Navigator.pushNamed(context, '/home');
+          Navigator.pushNamed(context, '/leaderboard');
         } else if (responseData['status'] == 'new_user') {
           // 새 사용자인 경우
           final saveResponse = await http.post(
