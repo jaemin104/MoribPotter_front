@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login',
+      initialRoute: '/survey',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const HomePage(), // 홈 화면

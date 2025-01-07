@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import '../user_state.dart'; // 전역 상태 클래스 임포트
 
 class SurveyPage extends StatefulWidget {
@@ -24,20 +23,20 @@ class _SurveyPageState extends State<SurveyPage> {
       ],
     },
     {
-      "question": "팀 프로젝트에서 \n당신은 어떤 역할을 선호합니까?",
+      "question": "팀 프로젝트에서 당신은\n어떤 역할을 선호합니까?",
       "choices": [
         {"text": "리더가 되어 팀을 이끈다.", "house": "s_dorm"},
         {"text": "팀원들에게 열정과 동기를 불어넣는다.", "house": "g_dorm"},
-        {"text": "팀 내의 조화를 유지하고 다른 사람을 돕는다.", "house": "h_dorm"},
+        {"text": "팀 내 조화를 유지하고 다른 사람을 돕는다.", "house": "h_dorm"},
         {"text": "창의적이고 효율적인 아이디어를 제안한다.", "house": "r_dorm"}
       ],
     },
     {
-      "question": "호그와트의 비밀 통로에서 길을 \n잃었다면 당신은 무엇을 하겠습니까?",
+      "question": "호그와트의 비밀 통로에서 길을\n잃었다면 무엇을 하겠습니까?",
       "choices": [
         {"text": "오히려 좋아! 모험을 즐긴다.", "house": "g_dorm"},
         {"text": "지도와 논리를 사용해 출구를 찾는다.", "house": "r_dorm"},
-        {"text": "누군가에게 유리하게 작용할 정보를 수집한다.", "house": "s_dorm"},
+        {"text": "자신에게 유리하게 작용할 정보를 수집한다.", "house": "s_dorm"},
         {"text": "동료들과 협력하여 탈출 방법을 찾는다.", "house": "h_dorm"}
       ],
     },
@@ -183,7 +182,7 @@ class _SurveyPageState extends State<SurveyPage> {
                             choice["text"],
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               fontFamily: 'CustomFont',
                               color: Colors.white,
                             ),
