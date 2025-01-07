@@ -56,7 +56,6 @@ class LoginPage extends StatelessWidget {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({'nickname': nickname}),
           );
-
           if (saveResponse.statusCode == 200) {
             Navigator.pushNamed(context, '/survey');
           } else {

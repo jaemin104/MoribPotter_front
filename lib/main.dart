@@ -8,9 +8,9 @@ import 'screens/logout_page.dart';
 import 'screens/test_page.dart';
 import 'screens/survey_page.dart';
 import 'screens/assign_page.dart';
-import 'screens/self_study_page.dart' as self_study;
+import 'screens/self_study_page.dart';
 import 'screens/textbook_page.dart';
-import 'screens/potion_exam_page.dart' as potion_exam;
+import 'screens/potion_exam_page.dart';
 import 'screens/real_exam_page.dart';
 import 'screens/leaderboard_page.dart';
 import 'screens/exam_result_page.dart';
@@ -44,15 +44,15 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(), // 홈 화면
         '/login': (context) => const LoginPage(), // 로그인 화면
         '/logout': (context) => const LogoutPage(), // 로그아웃 화면
-        '/test': (context) => const TestPage(),
+        '/test': (context) => const TestPage(), // 서버 연결 테스트, 안 씀
         '/survey': (context) => const SurveyPage(), // 설문조사 화면
         '/assign': (context) => const AssignPage(), // 기숙사 배정 화면
-        '/selfStudy': (context) => const self_study.SelfStudyPage(), // 자습실
-        '/textbookPage': (context) => const TextbookPage(),
-        '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
-        '/realExamPage': (context) => const RealExamPage(),
-        '/leaderboard': (context) => const LeaderboardPage(),
-        '/examResultPage': (context) => const ExamResultPage(),
+        '/selfStudy': (context) => const SelfStudyPage(), // 자습실
+        '/textbookPage': (context) => const TextbookPage(), // 도감
+        '/potionExam': (context) => const PotionExamPage(), // 시험장
+        '/realExamPage': (context) => const RealExamPage(), // 실제 시험
+        '/leaderboard' : (context) => const LeaderboardPage(), // 리더보드
+        '/examResultPage': (context) => const ExamResultPage(), // 시험 결과
       },
     );
   }
