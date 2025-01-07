@@ -13,7 +13,8 @@ class RealExamPage extends StatefulWidget {
 class _RealExamPageState extends State<RealExamPage> {
   Timer? _timer;
   int _elapsedTime = 0; // 경과 시간을 저장하는 변수
-
+  int _currentPotionIndex = 0;
+  int _totalScore = 0;
   String _currentQuestion = '';
   int _clickCount = 0;
 
@@ -28,11 +29,119 @@ class _RealExamPageState extends State<RealExamPage> {
   List<String> generateRandomQuestions(List<String> allPotions) {
     final random = Random();
     final selectedPotions = List.of(allPotions)..shuffle(random);
-    final selectedThree = selectedPotions.take(3).toList();
+    final selectedPotions.take(3).toList();
 
     return [
       '${selectedThree[0]},\n${selectedThree[1]},\n${selectedThree[2]}을\n완벽하게 만드시오.',
     ];
+  }
+
+  // 포션 정답 데이터
+  final Map<String, List<Map<String, dynamic>>> potionAnswers = {
+    '용기의 비약': [
+      {'ingredient': '마법의 물', 'time': 5},
+      {'ingredient': '기린의 혀', 'time': 8},
+      {'ingredient': '약초', 'time': 18},
+    ],
+    '평온의 비약': [
+      {'ingredient': '뱀 껍질', 'time': 7},
+      {'ingredient': '다이아몬드', 'time': 11},
+      {'ingredient': '드래곤의 피', 'time': 17},
+    ],
+    '사랑의 비약': [
+      {'ingredient': '뱀의 혀', 'time': 3},
+      {'ingredient': '루비', 'time': 7},
+      {'ingredient': '마법의 물', 'time': 11},
+    ],
+    '야망의 비약': [
+      {'ingredient': '거미 다리', 'time': 6},
+      {'ingredient': '약초', 'time': 14},
+      {'ingredient': '드래곤의 뿔', 'time': 22},
+    ],
+    '치유의 비약': [
+      {'ingredient': '달팽이 진액', 'time': 5},
+      {'ingredient': '드래곤 알', 'time': 15},
+      {'ingredient': '에메랄드', 'time': 19},
+    ],
+    '행운의 비약': [
+      {'ingredient': '기린의 목뼈', 'time': 4},
+      {'ingredient': '천사의 날개', 'time': 10},
+      {'ingredient': '다이아몬드', 'time': 19},
+    ],
+  };
+
+  // 현재 포션의 사용자 입력 데이터
+  final Map<String, dynamic> userInputs = {
+    // 'first': null,
+    // 'first_time': null,
+    // 'second': null,
+    // 'second_time': null,
+    // 'third': null,
+    // 'third_time': null,
+  userInputs
+  ..['first'] = null
+  ..['first_time'] = null
+  ..['second'] = null
+  ..['second_time'] = null
+  ..['third'] = null
+  ..['third_time'] = null;
+
+};
+
+  void _recordIngredient(String ingredient, int time) {
+    setState(() {
+      if (userInputs['first'] == null) {
+        userInputs['first'] = ingredient;
+        userInputs['first_time'] = time;
+      } else if (userInputs['second'] == null) {
+        userInputs['second'] = ingredient;
+        userInputs['second_time'] = time;
+      } else if (userInputs['third'] == null) {
+        userInputs['third'] = ingredient;
+        userInputs['third_time'] = time;
+
+        // 현재 포션에 대한 점수 계산
+        final score = _calculateScore(_currentPotion);
+        _totalScore += score;
+
+        // 다음 포션으로 이동
+        if (_currentPotionIndex < 2) {
+          _currentPotionIndex++;
+          _currentPotion = _gamePotions[_currentPotionIndex];
+          userInputs.clear();
+        } else {
+          // 세 번째 포션까지 완료 시 결과 페이지로 이동
+          _timer?.cancel();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ExamResultPage(score: _totalScore),
+            ),
+          );
+        }
+      }
+    });
+  }
+
+  int _calculateScore(String potionName) {
+    int score = 0;
+    final answers = potionAnswers[potionName];
+
+    if (answers == null) return score;
+
+    if (userInputs['first'] == answers[0]['ingredient'] &&
+        (userInputs['first_time'] - answers[0]['time']).abs() <= 2) {
+      score += 10;
+    }
+    if (userInputs['second'] == answers[1]['ingredient'] &&
+        (userInputs['second_time'] - answers[1]['time']).abs() <= 2) {
+      score += 10;
+    }
+    if (userInputs['third'] == answers[2]['ingredient'] &&
+        (userInputs['third_time'] - answers[2]['time']).abs() <= 2) {
+      score += 10;
+    }
+    return score;
   }
 
   final List<Map<String, String>> _potionIngredients = [
@@ -136,6 +245,7 @@ class _RealExamPageState extends State<RealExamPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showCustomDialog();
     });
+    _currentPotion = _examQuestions[0];
   }
 
   void _randomizeIngredients() {
@@ -310,7 +420,7 @@ class _RealExamPageState extends State<RealExamPage> {
                     duration: const Duration(seconds: 1),
                   ),
                 );
-              },
+                _recordIngredient(data, time);
             ),
           ),
           Positioned(
