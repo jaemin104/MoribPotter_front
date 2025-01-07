@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class TextbookPage extends StatefulWidget {
   const TextbookPage({Key? key}) : super(key: key);
@@ -8,115 +10,45 @@ class TextbookPage extends StatefulWidget {
 }
 
 class _TextbookPageState extends State<TextbookPage> {
-  final List<Map<String, dynamic>> pages = [
-    {
-      'leftPage': {
-        'image': 'assets/potions/potion1.png',
-        'text': '베라베르토',
-        'recipe': [
-          {
-            'text': '불 켜고 4초 뒤에\n마법의 물 넣기',
-            'image': 'assets/ingredients/magic_water.png'
-          },
-          {
-            'text': '그리고 5초 뒤에\n기린의 혀 넣기',
-            'image': 'assets/ingredients/giraffe_tongue.png'
-          },
-          {'text': '그리고 3초 뒤에\n약초 넣기', 'image': 'assets/ingredients/herb.png'},
-        ],
-      },
-      'rightPage': {
-        'image': 'assets/potions/potion2.png',
-        'text': '세르펜 소르티아',
-        'recipe': [
-          {
-            'text': '불 켜고 4초 뒤에\n뱀 껍질 넣기',
-            'image': 'assets/ingredients/snake_skin.jpeg'
-          },
-          {
-            'text': '그리고 5초 뒤에\n다이아몬드 넣기',
-            'image': 'assets/ingredients/diamond.png'
-          },
-          {
-            'text': '그리고 3초 뒤에\n드래곤의 피 넣기',
-            'image': 'assets/ingredients/dragon_blood.jpeg'
-          },
-        ],
-      },
-    },
-    {
-      'leftPage': {
-        'image': 'assets/potions/potion3.png',
-        'text': '비페라 이바네스카',
-        'recipe': [
-          {
-            'text': '불 켜고 4초 뒤에\n뱀의 혀 넣기',
-            'image': 'assets/ingredients/snake_tongue.png'
-          },
-          {'text': '그리고 5초 뒤에\n루비 넣기', 'image': 'assets/ingredients/ruby.png'},
-          {
-            'text': '그리고 3초 뒤에\n마법의 물 넣기',
-            'image': 'assets/ingredients/magic_water.png'
-          },
-        ],
-      },
-      'rightPage': {
-        'image': 'assets/potions/potion4.png',
-        'text': '아라니아 액서메이',
-        'recipe': [
-          {
-            'text': '불 켜고 4초 뒤에\n거미 다리 넣기',
-            'image': 'assets/ingredients/spider_leg.png'
-          },
-          {'text': '그리고 5초 뒤에\n약초 넣기', 'image': 'assets/ingredients/herb.png'},
-          {
-            'text': '그리고 3초 뒤에\n드래곤의 뿔 넣기',
-            'image': 'assets/ingredients/dragon_horn.png'
-          },
-        ],
-      },
-    },
-    {
-      'leftPage': {
-        'image': 'assets/potions/potion5.png',
-        'text': '에이트 슬러그스',
-        'recipe': [
-          {
-            'text': '불 켜고 4초 뒤에\n달팽이 진액 넣기',
-            'image': 'assets/ingredients/snail_essence.png'
-          },
-          {
-            'text': '그리고 5초 뒤에\n드래곤 알 넣기',
-            'image': 'assets/ingredients/dragon_egg.png'
-          },
-          {
-            'text': '그리고 3초 뒤에\n에메랄드 넣기',
-            'image': 'assets/ingredients/emerald.png'
-          },
-        ],
-      },
-      'rightPage': {
-        'image': 'assets/potions/potion6.png',
-        'text': '브라키움 엠멘도',
-        'recipe': [
-          {
-            'text': '불 켜고 4초 뒤에\n기린의 목뼈 넣기',
-            'image': 'assets/ingredients/giraffe_bone.png'
-          },
-          {
-            'text': '그리고 5초 뒤에\n천사의 날개 넣기',
-            'image': 'assets/ingredients/angel_wing.png'
-          },
-          {
-            'text': '그리고 3초 뒤에\n다이아몬드 넣기',
-            'image': 'assets/ingredients/diamond.png'
-          },
-        ],
-      },
-    },
-  ];
-
+  List<Map<String, dynamic>> pages = [];
   int _currentPage = 0;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPages(); // API에서 데이터 가져오기
+  }
+
+  Future<void> fetchPages() async {
+    try {
+      final response = await http.get(Uri.parse('http://172.10.7.89/recipes'));
+      print('API 호출 상태 코드: ${response.statusCode}');
+      print('API 응답 데이터: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        // 데이터를 두 개씩 묶어서 pages 리스트 생성
+        List<Map<String, dynamic>> groupedPages = [];
+        for (int i = 0; i < data.length; i += 2) {
+          groupedPages.add({
+            'leftPage': data[i],
+            'rightPage': i + 1 < data.length ? data[i + 1] : null,
+          });
+        }
+
+        setState(() {
+          pages = groupedPages;
+          isLoading = false;
+        });
+      } else {
+        print('API 호출 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching recipes: $e');
+    }
+  }
 
   void _nextPage() {
     if (_currentPage < pages.length - 1) {
@@ -134,101 +66,95 @@ class _TextbookPageState extends State<TextbookPage> {
     }
   }
 
-  void _showRecipe(String title, List<Map<String, String>> ingredients) {
+  void _showRecipe(String title, List<Map<String, dynamic>> ingredients, int fullTime) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent, // 배경색 투명
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // 배경 이미지
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/recipe_background.png'), // 배경 이미지
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.circular(20), // 둥근 모서리
-                ),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 36),
-                    // 팝업 제목
-                    Text(
-                      title + " 레시피",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontFamily: 'CustomFont',
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // 재료 리스트
-                    ...ingredients.map(
-                      (ingredient) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center, // 가로 방향 중앙 정렬
-                          crossAxisAlignment:
-                              CrossAxisAlignment.center, // 세로 방향 중앙 정렬
-                          children: [
-                            // 재료 이미지
-                            Image.asset(
-                              ingredient['image']!,
-                              width: 120,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
-                            const SizedBox(width: 8),
-                            // 재료 이름 텍스트
-                            Expanded(
-                              child: Text(
-                                ingredient['text']!,
-                                textAlign: TextAlign.center, // 텍스트 가운데 정렬
-                                style: const TextStyle(
-                                  fontFamily: 'CustomFont',
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    //const SizedBox(height: 16),
-                    // 닫기 버튼
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black.withOpacity(0.8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        '닫기',
-                        style: TextStyle(
-                          fontFamily: 'CustomFont',
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+          backgroundColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage('assets/recipe_background.png'),
+                fit: BoxFit.cover,
               ),
-            ],
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.fromLTRB(35.0, 45.0, 35.0, 35.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '$title 레시피',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: 'CustomFont', // 커스텀 폰트 사용
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ...ingredients.map(
+                      (ingredient) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          ingredient['image']!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Text(
+                            ingredient['text']!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontFamily: 'CustomFont', // 커스텀 폰트 사용
+                              fontSize: 15,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  '총 ${fullTime}초 가열하여 완성!', // full_time 표시
+                  style: const TextStyle(
+                    fontFamily: 'CustomFont', // 커스텀 폰트 사용
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black.withOpacity(0.8), // 배경색: 반투명 검정
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20), // 둥근 모서리
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 팝업 닫기
+                  },
+                  child: const Text(
+                    '닫기',
+                    style: TextStyle(
+                      fontFamily: 'CustomFont', // 커스텀 폰트
+                      color: Colors.white, // 텍스트 색상 흰색
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -237,27 +163,32 @@ class _TextbookPageState extends State<TextbookPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     final currentData = pages[_currentPage];
+
     return Scaffold(
       body: Stack(
         children: [
-          // 배경 이미지
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/background.webp"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // 책 이미지
           AppBar(
-            backgroundColor: Colors.transparent, // AppBar 배경 투명
-            elevation: 0, // 그림자 제거
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+              icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
               onPressed: () {
-                Navigator.pop(context); // 이전 페이지로 이동
+                Navigator.pop(context);
               },
             ),
           ),
@@ -266,10 +197,9 @@ class _TextbookPageState extends State<TextbookPage> {
               alignment: Alignment.center,
               children: [
                 Image.asset(
-                  "assets/textbook3.png", // 책 이미지
+                  "assets/textbook3.png",
                   fit: BoxFit.cover,
                 ),
-                // 이전 페이지 화살표 아이콘 (첫 번째 페이지에서 숨김)
                 if (_currentPage > 0)
                   Positioned(
                     bottom: 30,
@@ -280,7 +210,6 @@ class _TextbookPageState extends State<TextbookPage> {
                       onPressed: _previousPage,
                     ),
                   ),
-                // 다음 페이지 화살표 아이콘 (마지막 페이지에서 숨김)
                 if (_currentPage < pages.length - 1)
                   Positioned(
                     bottom: 30,
@@ -294,27 +223,35 @@ class _TextbookPageState extends State<TextbookPage> {
               ],
             ),
           ),
-          // 페이지 내용
           Positioned.fill(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Stack(
               children: [
-                // 왼쪽 페이지
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _showRecipe(
-                        currentData['leftPage']['text'],
-                        currentData['leftPage']['recipe'],
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(50, 70, 10, 50),
+                // 왼쪽 포션
+                Align(
+                  alignment: Alignment.centerLeft, // 왼쪽 가운데 정렬
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 70.0), // 왼쪽 간격 조정
+                    child: GestureDetector(
+                      onTap: () {
+                        if (currentData['leftPage'] != null) {
+                          _showRecipe(
+                            currentData['leftPage']['portion_name'],
+                            (currentData['leftPage']['ingredients'] as List)
+                                .map<Map<String, String>>((ingredient) => {
+                              'text':
+                              '${ingredient['time']}초 뒤에\n${ingredient['name']} 넣기',
+                              'image': ingredient['image'],
+                            })
+                                .toList(),
+                            currentData['leftPage']['full_time'], // full_time 추가
+                          );
+                        }
+                      },
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min, // 내용물 크기에 맞춰 Column 크기 설정
                         children: [
                           Text(
-                            currentData['leftPage']['text'],
+                            currentData['leftPage']['portion_name'],
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -323,34 +260,45 @@ class _TextbookPageState extends State<TextbookPage> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           Image.asset(
-                            currentData['leftPage']['image'],
+                            currentData['leftPage']['recipe_image'],
                             fit: BoxFit.fitWidth,
-                            height: 150,
+                            height: 130,
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
                   ),
                 ),
-                // 오른쪽 페이지
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _showRecipe(
-                        currentData['rightPage']['text'],
-                        currentData['rightPage']['recipe'],
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 70, 50, 50),
+                // 오른쪽 포션
+                Align(
+                  alignment: Alignment.centerRight, // 오른쪽 가운데 정렬
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 75.0), // 오른쪽 간격 조정
+                    child: currentData['rightPage'] != null
+                        ? GestureDetector(
+                      onTap: () {
+                        if (currentData['rightPage'] != null) {
+                          _showRecipe(
+                            currentData['rightPage']['portion_name'],
+                            (currentData['rightPage']['ingredients'] as List)
+                                .map<Map<String, String>>((ingredient) => {
+                              'text':
+                              '${ingredient['time']}초 뒤에\n${ingredient['name']} 넣기',
+                              'image': ingredient['image'],
+                            })
+                                .toList(),
+                            currentData['rightPage']['full_time'], // full_time 추가
+                          );
+                        }
+                      },
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min, // 내용물 크기에 맞춰 Column 크기 설정
                         children: [
                           Text(
-                            currentData['rightPage']['text'],
+                            currentData['rightPage']['portion_name'],
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -359,34 +307,34 @@ class _TextbookPageState extends State<TextbookPage> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           Image.asset(
-                            currentData['rightPage']['image'],
+                            currentData['rightPage']['recipe_image'],
                             fit: BoxFit.cover,
-                            height: 150,
+                            height: 130,
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 20),
                         ],
                       ),
-                    ),
+                    )
+                        : const SizedBox.shrink(),
                   ),
                 ),
               ],
             ),
           ),
-
           Positioned(
-            bottom: 160, // 화면 아래에서 20픽셀 위에 위치
+            bottom: 160,
             left: 0,
             right: 0,
             child: Center(
               child: Text(
-                '레시피를 보려면\n포션을 클릭하세요', // 아래쪽 텍스트 내용
+                '레시피를 보려면\n포션을 클릭하세요',
                 style: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
-                  fontFamily: 'CustomFont',
+                  fontFamily: 'CustomFont', // 커스텀 폰트 적용
                 ),
                 textAlign: TextAlign.center,
               ),
