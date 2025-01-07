@@ -52,7 +52,19 @@ class MyApp extends StatelessWidget {
         '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
         '/realExamPage': (context) => const RealExamPage(),
         '/leaderboard': (context) => const LeaderboardPage(),
-        '/examResultPage': (context) => const ExamResultPage(),
+        // '/examResultPage': (context) => const ExamResultPage(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/examResultPage') {
+          final args = settings.arguments as int; // 전달받은 점수
+          return MaterialPageRoute(
+            builder: (context) => ExamResultPage(score: args),
+          );
+        }
+        // 예외 처리: 정의되지 않은 라우트
+        // return MaterialPageRoute(
+        //   builder: (context) => const RealExamPage(),
+        // );
       },
     );
   }
