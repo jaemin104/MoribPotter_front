@@ -10,41 +10,41 @@ class HomePage extends StatelessWidget {
     // 전역 상태에서 기숙사 정보 가져오기
     final userState = Provider.of<UserState>(context, listen: false);
     final dorm = userState.dorm;
+    print("lookatthis");
+    print(MediaQuery.of(context).size.width);
 
     // 배경 이미지를 기숙사에 따라 설정
     final backgroundImage = {
-      "g_dorm": "assets/g_dorm.webp",
-      "r_dorm": "assets/r_dorm.webp",
-      "s_dorm": "assets/s_dorm.webp",
-      "h_dorm": "assets/h_dorm.webp",
+      "g_dorm": "assets/dorms/g_dorm.webp",
+      "r_dorm": "assets/dorms/r_dorm.webp",
+      "s_dorm": "assets/dorms/s_dorm.webp",
+      "h_dorm": "assets/dorms/h_dorm.webp",
     }[dorm];
 
-    Widget buildImageButton({
-      required String imagePath,
+    Widget buildTextButton({
       required String text,
       required VoidCallback onPressed,
+      required double top,
+      required double left,
     }) {
-      return GestureDetector(
-        onTap: onPressed,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // 버튼 배경 이미지
-            Image.asset(
-              imagePath,
-              width: 500, // 이미지의 가로 크기
-              height: 250, // 이미지의 세로 크기
-              fit: BoxFit.contain,
+      return Positioned(
+        top: top,
+        left: left,
+        child: GestureDetector(
+          onTap: onPressed,
+          child: Container(
+            padding: const EdgeInsets.all(10), // 클릭 영역 확장
+            decoration: BoxDecoration(
+              color: Colors.transparent, // 배경 투명
             ),
-            // 버튼 텍스트
-            Text(
+            child: Text(
               text,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'CustomFont',
-                color: Colors.white, // 텍스트 색상
+                color: Colors.white,
                 shadows: [
                   Shadow(
                     offset: Offset(1, 1),
@@ -54,7 +54,62 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+          ),
+        ),
+      );
+    }
+
+    Widget buildBigTextButton({
+      required String text,
+      required VoidCallback onPressed,
+      required double top,
+      required double left,
+    }) {
+      return Positioned(
+        top: top,
+        left: left,
+        child: GestureDetector(
+          onTap: onPressed,
+          child: Container(
+            padding: const EdgeInsets.all(10), // 클릭 영역 확장
+            decoration: BoxDecoration(
+              color: Colors.transparent, // 배경 투명
+            ),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'CustomFont',
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    offset: Offset(1, 1),
+                    blurRadius: 2,
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget buildNonClickableImage({
+      required String imagePath,
+      required double top,
+      required double left,
+    }) {
+      return Positioned(
+        top: top,
+        left: left,
+        child: Image.asset(
+          imagePath,
+          width: 500,
+          height: 250,
+          fit: BoxFit.contain,
         ),
       );
     }
@@ -71,44 +126,50 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          // 리더보드 버튼 (상단 중앙)
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: buildImageButton(
-                imagePath: "assets/upper_wood_sign2.png",
-                text: "리더보드",
-                onPressed: () {
-                  Navigator.pushNamed(context, '/leaderboard');
-                },
-              ),
-            ),
+          // 리더보드 이미지
+          buildNonClickableImage(
+            imagePath: "assets/upper_wood_sign2.png",
+            top: 50,
+            left: MediaQuery.of(context).size.width / 2 - 250,
           ),
-          // 마법 포션 레시피 (왼쪽 아래)
-          Positioned(
-            bottom: 0, // 화면 아래에서 16픽셀 위
-            right: 130, // 화면 왼쪽에서 16픽셀 오른쪽
-            child: buildImageButton(
-              imagePath: "assets/under_wood_sign2.png",
-              text: "마법 포션 레시피\n족보 도서관\n\n",
-              onPressed: () {
-                Navigator.pushNamed(context, '/selfStudy');
-              },
-            ),
+          // 마법 포션 레시피 이미지
+          buildNonClickableImage(
+            imagePath: "assets/under_wood_sign2.png",
+            top: MediaQuery.of(context).size.height - 150,
+            left: -155,
           ),
-          // 마법 포션 시험장 (오른쪽 아래)
-          Positioned(
-            bottom: 0, // 화면 아래에서 16픽셀 위
-            left: 130, // 화면 오른쪽에서 16픽셀 왼쪽
-            child: buildImageButton(
-              imagePath: "assets/under_wood_sign2.png",
-              text: "류네이프 교수님의\n마법 포션 시험장\n\n",
-              onPressed: () {
-                Navigator.pushNamed(context, '/potionExam');
-              },
-            ),
+          // 스네이프 교수님의 포션 시험장 이미지
+          buildNonClickableImage(
+            imagePath: "assets/under_wood_sign2.png",
+            top: MediaQuery.of(context).size.height - 150,
+            left: 60,
+          ),
+          // 리더보드 버튼
+          buildBigTextButton(
+            text: "리더보드",
+            onPressed: () {
+              Navigator.pushNamed(context, '/leaderboard');
+            },
+            top: 145,
+            left: MediaQuery.of(context).size.width / 2 - 55,
+          ),
+          // 마법 포션 레시피 버튼
+          buildTextButton(
+            text: "마법 포션 레시피\n족보 도서관",
+            onPressed: () {
+              Navigator.pushNamed(context, '/selfStudy');
+            },
+            top: MediaQuery.of(context).size.height - 100,
+            left: 22,
+          ),
+          // 스네이프 교수님의 포션 시험장 버튼
+          buildTextButton(
+            text: "스네이프 교수님의\n마법 포션 시험장",
+            onPressed: () {
+              Navigator.pushNamed(context, '/potionExam');
+            },
+            top: MediaQuery.of(context).size.height - 100,
+            left: MediaQuery.of(context).size.width - 180,
           ),
         ],
       ),

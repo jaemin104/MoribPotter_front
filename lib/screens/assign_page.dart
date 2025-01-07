@@ -18,22 +18,22 @@ class AssignPage extends StatelessWidget {
       "g_dorm": {
         "name": "아름핀도르",
         "description": "그 이름에 걸맞는 용기를\n지닌 아이들을 가르치리라",
-        "flag": "assets/g_flag.webp",
+        "flag": "assets/flags/g_flag.webp",
       },
       "r_dorm": {
         "name": "사랑클로",
         "description": "끝없는 지혜를 추구하는\n이들의 지성이 빛날 것이다",
-        "flag": "assets/r_flag.webp",
+        "flag": "assets/flags/r_flag.webp",
       },
       "s_dorm": {
         "name": "진리데린",
         "description": "야망과 결단으로\n위대한 운명을 설계하리라",
-        "flag": "assets/s_flag.webp",
+        "flag": "assets/flags/s_flag.webp",
       },
       "h_dorm": {
         "name": "성실푸프",
         "description": "언제나 정의와 충성심을\n품은 이들의 쉼터가 되리라",
-        "flag": "assets/h_flag.webp",
+        "flag": "assets/flags/h_flag.webp",
       },
     };
 

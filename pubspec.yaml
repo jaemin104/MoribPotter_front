@@ -63,14 +63,8 @@ flutter:
 
   assets:
     - assets/
-    - assets/g_dorm.webp
-    - assets/s_dorm.webp
-    - assets/h_dorm.webp
-    - assets/r_dorm.webp
-    - assets/g_flag.webp
-    - assets/s_flag.webp
-    - assets/h_flag.webp
-    - assets/r_flag.webp
+    - assets/dorms/
+    - assets/flags/
     - assets/background.webp
     - assets/sorting_hat.webp
     - assets/potion_exam_background.webp

@@ -74,13 +74,53 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 위치 조정을 위한 매개변수
+    // 위 -1.0, 아래 1.0
+    final double potterVerticalOffset = 0.05; // morib_potter.png Y축 위치 조정
+    final double subtitleVerticalOffset = 0.2; // subtitle.png Y축 위치 조정
+    final double buttonVerticalOffset = 0.85; // 로그인 버튼 Y축 위치 조정
+
     return Scaffold(
-      appBar: AppBar(title: const Text('카카오 로그인')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => _loginWithKakao(context),
-          child: const Text('카카오 로그인'),
-        ),
+      body: Stack(
+        children: [
+          // 배경 이미지
+          Positioned.fill(
+            child: Image.asset(
+              'assets/hogwart.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Subtitle 이미지 (좌우 가운데, 상하 조정 가능)
+          Align(
+            alignment: Alignment(0.0, subtitleVerticalOffset), // X축: 0.0(가운데), Y축: 원하는 값
+            child: Image.asset(
+              'assets/subtitle.png',
+              width: 320, // 크기 조정
+              height: 160,
+            ),
+          ),
+          // 모리브 포터 이미지 (좌우 가운데, 상하 조정 가능)
+          Align(
+            alignment: Alignment(0.0, potterVerticalOffset), // X축: 0.0(가운데), Y축: 원하는 값
+            child: Image.asset(
+              'assets/morib_potter.png',
+              width: 240, // 크기 조정
+              height: 120,
+            ),
+          ),
+          // 로그인 버튼 (좌우 가운데, 상하 조정 가능)
+          Align(
+            alignment: Alignment(0.0, buttonVerticalOffset), // X축: 0.0(가운데), Y축: 원하는 값
+            child: GestureDetector(
+              onTap: () => _loginWithKakao(context),
+              child: Image.asset(
+                'assets/kakao_login_button.png',
+                width: 180, // 버튼 너비
+                height: 90, // 버튼 높이
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

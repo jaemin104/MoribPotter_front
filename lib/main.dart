@@ -47,9 +47,9 @@ class MyApp extends StatelessWidget {
         '/test': (context) => const TestPage(), // 서버 연결 테스트, 안 씀
         '/survey': (context) => const SurveyPage(), // 설문조사 화면
         '/assign': (context) => const AssignPage(), // 기숙사 배정 화면
-        '/selfStudy': (context) => const self_study.SelfStudyPage(), // 자습실
+        '/selfStudy': (context) => const SelfStudyPage(), // 자습실
         '/textbookPage': (context) => const TextbookPage(),
-        '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
+        '/potionExam': (context) => const PotionExamPage(), // 시험장
         '/realExamPage': (context) => const RealExamPage(),
         '/leaderboard': (context) => const LeaderboardPage(),
         // '/examResultPage': (context) => const ExamResultPage(),
