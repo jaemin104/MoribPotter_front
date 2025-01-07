@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../user_state.dart'; // UserState를 불러옵니다.
 import 'package:provider/provider.dart'; // Provider를 사용합니다.
-import 'self_study_page.dart'; // SelfStudyPage를 불러옵니다.
-import 'potion_exam_page.dart'; // PotionExamPage를 불러옵니다.
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +19,46 @@ class HomePage extends StatelessWidget {
       "h_dorm": "assets/h_dorm.webp",
     }[dorm];
 
+    Widget buildImageButton({
+      required String imagePath,
+      required String text,
+      required VoidCallback onPressed,
+    }) {
+      return GestureDetector(
+        onTap: onPressed,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // 버튼 배경 이미지
+            Image.asset(
+              imagePath,
+              width: 500, // 이미지의 가로 크기
+              height: 250, // 이미지의 세로 크기
+              fit: BoxFit.contain,
+            ),
+            // 버튼 텍스트
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'CustomFont',
+                color: Colors.white, // 텍스트 색상
+                shadows: [
+                  Shadow(
+                    offset: Offset(1, 1),
+                    blurRadius: 2,
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -33,61 +71,43 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          // 왼쪽 아래 버튼
+          // 리더보드 버튼 (상단 중앙)
           Positioned(
-            bottom: 16,
-            left: 16,
-            child: SizedBox(
-              width: 160,
-              height: 80,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withOpacity(0.7), // 버튼 배경색
-                  foregroundColor: Colors.deepPurpleAccent, // 텍스트 색상
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10,
-                  ),
-                ),
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: buildImageButton(
+                imagePath: "assets/upper_wood_sign2.png",
+                text: "리더보드",
                 onPressed: () {
-                  Navigator.pushNamed(context, '/selfStudy');
+                  Navigator.pushNamed(context, '/leaderboard');
                 },
-                child: const Text(
-                  '마법 포션 레시피\n   족보 도서관',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'CustomFont',
-                  ),
-                ),
               ),
             ),
           ),
-          // 오른쪽 아래 버튼
+          // 마법 포션 레시피 (왼쪽 아래)
           Positioned(
-            bottom: 16,
-            right: 16,
-            child: SizedBox(
-              width: 160,
-              height: 80,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black.withOpacity(0.7), // 버튼 배경색
-                  foregroundColor: Colors.deepPurpleAccent, // 텍스트 색상
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/potionExam');
-                },
-                child: const Text(
-                  '류네이프 교수님의\n 마법 포션 시험장',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, fontFamily: 'CustomFont'),
-                ),
-              ),
+            bottom: 0, // 화면 아래에서 16픽셀 위
+            right: 130, // 화면 왼쪽에서 16픽셀 오른쪽
+            child: buildImageButton(
+              imagePath: "assets/under_wood_sign2.png",
+              text: "마법 포션 레시피\n족보 도서관\n\n",
+              onPressed: () {
+                Navigator.pushNamed(context, '/selfStudy');
+              },
+            ),
+          ),
+          // 마법 포션 시험장 (오른쪽 아래)
+          Positioned(
+            bottom: 0, // 화면 아래에서 16픽셀 위
+            left: 130, // 화면 오른쪽에서 16픽셀 왼쪽
+            child: buildImageButton(
+              imagePath: "assets/under_wood_sign2.png",
+              text: "류네이프 교수님의\n마법 포션 시험장\n\n",
+              onPressed: () {
+                Navigator.pushNamed(context, '/potionExam');
+              },
             ),
           ),
         ],

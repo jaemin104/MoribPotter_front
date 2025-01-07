@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/survey',
+      initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const HomePage(), // 홈 화면
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         '/textbookPage': (context) => const TextbookPage(),
         '/potionExam': (context) => const potion_exam.PotionExamPage(), // 시험장
         '/realExamPage': (context) => const RealExamPage(),
-        '/leaderboard' : (context) => const LeaderboardPage(),
+        '/leaderboard': (context) => const LeaderboardPage(),
         '/examResultPage': (context) => const ExamResultPage(),
       },
     );

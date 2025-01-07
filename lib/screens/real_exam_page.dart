@@ -12,108 +12,111 @@ class RealExamPage extends StatefulWidget {
 
 class _RealExamPageState extends State<RealExamPage> {
   Timer? _timer;
-  int _remainingTime = 0;
+  int _elapsedTime = 0; // 경과 시간을 저장하는 변수
+
   String _currentQuestion = '';
   int _clickCount = 0;
 
-  final List<String> _examQuestions = [
-    '1분 안에\n아라니아 액서메이 포션,\n아라니아 액서메이 포션,\n아라니아 액서메이 포션을\n만드시오.',
-    '2분 안에\n아라니아 액서메이 포션,\n아라니아 액서메이 포션,\n아라니아 액서메이 포션을\n만드시오.',
-    '3분 안에\n아라니아 액서메이 포션,\n아라니아 액서메이 포션,\n아라니아 액서메이 포션을\n만드시오.',
+  final List<String> _allPotions = [
+    '용기의 비약',
+    '평온의 비약',
+    '사랑의 비약',
+    '야망의 비약',
+    '치유의 비약',
+    '행운의 비약',
   ];
+  List<String> generateRandomQuestions(List<String> allPotions) {
+    final random = Random();
+    final selectedPotions = List.of(allPotions)..shuffle(random);
+    final selectedThree = selectedPotions.take(3).toList();
 
-  final List<Map<String, dynamic>> _potionIngredeints = [
+    return [
+      '${selectedThree[0]},\n${selectedThree[1]},\n${selectedThree[2]}을\n완벽하게 만드시오.',
+    ];
+  }
+
+  final List<Map<String, String>> _potionIngredients = [
     {
-      'top': 350.0,
-      'left': 55.0,
       'ingredient': '다이아몬드',
       'image': 'assets/ingredients/diamond.png',
     },
     {
-      'top': 350.0,
-      'left': 137.0,
       'ingredient': '천사의 날개',
       'image': 'assets/ingredients/angel_wing.png',
     },
     {
-      'top': 345.0,
-      'left': 220.0,
       'ingredient': '드래곤의 알',
       'image': 'assets/ingredients/dragon_egg.png',
     },
     {
-      'top': 350.0,
-      'left': 305.0,
       'ingredient': '드래곤의 피',
       'image': 'assets/ingredients/dragon_blood.jpeg',
     },
     {
-      'top': 345.0,
-      'left': 385.0,
       'ingredient': '에메랄드',
       'image': 'assets/ingredients/emerald.png',
     },
     {
-      'top': 480.0,
-      'left': 55.0,
       'ingredient': '기린의 목뼈',
       'image': 'assets/ingredients/giraffe_bone.png',
     },
     {
-      'top': 480.0,
-      'left': 137.0,
       'ingredient': '기린의 혀',
       'image': 'assets/ingredients/giraffe_tongue.png',
     },
     {
-      'top': 480.0,
-      'left': 220.0,
       'ingredient': '약초',
       'image': 'assets/ingredients/herb.png',
     },
     {
-      'top': 470.0,
-      'left': 303.0,
       'ingredient': '마법의 물',
       'image': 'assets/ingredients/magic_water.png',
     },
     {
-      'top': 480.0,
-      'left': 385.0,
       'ingredient': '루비',
       'image': 'assets/ingredients/ruby.png',
     },
     {
-      'top': 620.0,
-      'left': 55.0,
       'ingredient': '드래곤의 뿔',
       'image': 'assets/ingredients/dragon_horn.png',
     },
     {
-      'top': 620.0,
-      'left': 137.0,
       'ingredient': '달팽이 진액',
       'image': 'assets/ingredients/snail_essence.png',
     },
     {
-      'top': 625.0,
-      'left': 215.0,
       'ingredient': '뱀 껍질',
       'image': 'assets/ingredients/snake_skin.jpeg',
     },
     {
-      'top': 620.0,
-      'left': 303.0,
       'ingredient': '뱀의 혀',
       'image': 'assets/ingredients/snake_tongue.png',
     },
     {
-      'top': 620.0,
-      'left': 385.0,
       'ingredient': '거미 다리',
       'image': 'assets/ingredients/spider_leg.png',
     },
   ];
+
+  final List<Map<String, double>> _positions = [
+    {'top': 350.0, 'left': 55.0},
+    {'top': 350.0, 'left': 137.0},
+    {'top': 345.0, 'left': 220.0},
+    {'top': 350.0, 'left': 305.0},
+    {'top': 345.0, 'left': 385.0},
+    {'top': 480.0, 'left': 55.0},
+    {'top': 480.0, 'left': 137.0},
+    {'top': 480.0, 'left': 220.0},
+    {'top': 470.0, 'left': 303.0},
+    {'top': 480.0, 'left': 385.0},
+    {'top': 620.0, 'left': 55.0},
+    {'top': 620.0, 'left': 137.0},
+    {'top': 625.0, 'left': 215.0},
+    {'top': 620.0, 'left': 303.0},
+    {'top': 620.0, 'left': 385.0},
+  ];
+
+  List<Map<String, dynamic>> _randomizedIngredients = [];
 
   // 버튼 텍스트 목록
   final List<String> _buttonTexts = [
@@ -122,12 +125,31 @@ class _RealExamPageState extends State<RealExamPage> {
     '세 번째 포션\n   제출하기',
   ];
 
+  late List<String> _examQuestions;
+
   @override
   void initState() {
     super.initState();
+    _examQuestions = generateRandomQuestions(_allPotions);
     _selectRandomQuestion();
+    _randomizeIngredients();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showCustomDialog();
+    });
+  }
+
+  void _randomizeIngredients() {
+    final random = Random();
+    final shuffledPositions = [..._positions]..shuffle(random);
+    final shuffledIngredients = [..._potionIngredients]..shuffle(random);
+
+    setState(() {
+      _randomizedIngredients = List.generate(15, (index) {
+        return {
+          ...shuffledIngredients[index],
+          ...shuffledPositions[index],
+        };
+      });
     });
   }
 
@@ -139,29 +161,18 @@ class _RealExamPageState extends State<RealExamPage> {
 
   void _selectRandomQuestion() {
     final random = Random();
-    final randomQuestion =
-        _examQuestions[random.nextInt(_examQuestions.length)];
-
-    final timeMatch = RegExp(r'(\d+)분').firstMatch(randomQuestion);
-    if (timeMatch != null) {
-      final timeInMinutes = int.parse(timeMatch.group(1)!);
-      setState(() {
-        _currentQuestion = randomQuestion;
-        _remainingTime = timeInMinutes * 60;
-      });
-    }
+    setState(() {
+      _currentQuestion = _examQuestions[random.nextInt(_examQuestions.length)];
+      _elapsedTime = 0; // 타이머 초기화
+    });
   }
 
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingTime > 0) {
-        setState(() {
-          _remainingTime--;
-        });
-      } else {
-        timer.cancel();
-      }
+      setState(() {
+        _elapsedTime++;
+      });
     });
   }
 
@@ -194,7 +205,6 @@ class _RealExamPageState extends State<RealExamPage> {
                       fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                //const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -209,7 +219,6 @@ class _RealExamPageState extends State<RealExamPage> {
                         fontFamily: 'CustomFont'),
                   ),
                 ),
-                //const SizedBox(height: 10),
               ],
             ),
           ),
@@ -218,14 +227,14 @@ class _RealExamPageState extends State<RealExamPage> {
     );
   }
 
-  // 다이얼로그를 표시하는 함수
+  // 재료 다이얼로그를 표시하는 함수
   void showIngredientDialog(
       BuildContext context, double top, double left, String ingredient) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: '닫기',
-      barrierColor: Colors.black54, // 다이얼로그 배경 어둡게
+      barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation1, animation2) {
         return Stack(
@@ -293,30 +302,28 @@ class _RealExamPageState extends State<RealExamPage> {
                 );
               },
               onAccept: (data) {
-                // 현재 표시 중인 스낵바 닫기
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-                // 새로운 스낵바 표시
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('$data 추가됨!'),
-                    duration: const Duration(seconds: 1), // 스낵바 표시 시간 조정
+                    duration: const Duration(seconds: 1),
                   ),
                 );
               },
             ),
           ),
           Positioned(
-            bottom: 100, // 원하는 Y 위치 (위에서 400픽셀)
-            left: 160, // 원하는 X 위치 (왼쪽에서 100픽셀)
+            bottom: 100,
+            left: 160,
             child: ElevatedButton(
               onPressed: () {
                 if (_clickCount < 2) {
                   setState(() {
                     _clickCount++;
+                    _randomizeIngredients(); // 재료 위치를 랜덤으로 변경
                   });
                 } else {
-                  // 세 번째 클릭 시 페이지 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -326,12 +333,12 @@ class _RealExamPageState extends State<RealExamPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 12), // 버튼 크기 조정
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 backgroundColor: Colors.black.withOpacity(0.7),
               ),
               child: Text(
-                _buttonTexts[_clickCount], // 클릭 횟수에 따라 텍스트 변경
+                _buttonTexts[_clickCount],
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -342,7 +349,7 @@ class _RealExamPageState extends State<RealExamPage> {
             ),
           ),
           // Draggable 아이콘 배치
-          ..._potionIngredeints.map((ingredient) {
+          ..._randomizedIngredients.map((ingredient) {
             return Positioned(
               top: ingredient['top'],
               left: ingredient['left'],
@@ -421,11 +428,11 @@ class _RealExamPageState extends State<RealExamPage> {
             ),
           ),
           Align(
-            alignment: Alignment.topCenter, // 화면 가운데 정렬
+            alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(top: 100.0), // 위에서 80 픽셀 추가
+              padding: const EdgeInsets.only(top: 100.0),
               child: Text(
-                '${_remainingTime ~/ 60}분 ${_remainingTime % 60}초',
+                '${_elapsedTime ~/ 60}분 ${_elapsedTime % 60}초',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 40,

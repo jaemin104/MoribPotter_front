@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/leaderboard_page.dart';
+import 'screens/real_exam_page.dart';
 
 void main() {
   runApp(const ScreenTestApp());
@@ -15,7 +15,7 @@ class ScreenTestApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LeaderboardPage(),
+      home: const RealExamPage(),
       debugShowCheckedModeBanner: false,
     );
   }

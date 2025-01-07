@@ -11,9 +11,8 @@ class LeaderboardPage extends StatefulWidget {
   State<LeaderboardPage> createState() => _LeaderboardPageState();
 }
 
-class _LeaderboardPageState extends State<LeaderboardPage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _LeaderboardPageState extends State<LeaderboardPage> {
+  int _selectedTab = 0; // 현재 선택된 탭 (0: 내 기록, 1: 전체 랭킹)
   List<Map<String, dynamic>> userScores = [];
   List<Map<String, dynamic>> leaderboard = [];
   int? highestScore;
@@ -21,7 +20,6 @@ class _LeaderboardPageState extends State<LeaderboardPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
     fetchUserScores();
     fetchLeaderboard();
   }
@@ -29,8 +27,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
   Future<void> fetchUserScores() async {
     final userState = Provider.of<UserState>(context, listen: false);
     final nickname = userState.nickname;
-    print('Nickname: $nickname');
-    // nickname으로 db에서 user_id 가져오기
+
     final response = await http.post(
       Uri.parse('http://172.10.7.89/auth/get_user_id'),
       headers: {'Content-Type': 'application/json'},
@@ -47,7 +44,6 @@ class _LeaderboardPageState extends State<LeaderboardPage>
       );
     }
 
-    // 가져온 user_id로 점수 기록 불러오기
     final response2 = await http.post(
       Uri.parse('http://172.10.7.89/scores/get_user_scores'),
       headers: {'Content-Type': 'application/json'},
@@ -59,7 +55,9 @@ class _LeaderboardPageState extends State<LeaderboardPage>
       setState(() {
         userScores = List<Map<String, dynamic>>.from(data);
         if (userScores.isNotEmpty) {
-          highestScore = userScores.map((e) => e['score'] as int).reduce((a, b) => a > b ? a : b);
+          highestScore = userScores
+              .map((e) => e['score'] as int)
+              .reduce((a, b) => a > b ? a : b);
         }
       });
     } else {
@@ -90,24 +88,102 @@ class _LeaderboardPageState extends State<LeaderboardPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('리더보드'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: '내 기록'),
-            Tab(text: '전체 랭킹'),
-          ],
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Stack(
         children: [
-          // 내 기록 탭
-          _buildUserScoresTab(),
-          // 전체 랭킹 탭
-          _buildLeaderboardTab(),
+          // 배경 이미지
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/background.webp"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // 콘텐츠
+          Column(
+            children: [
+              AppBar(
+                backgroundColor: Colors.transparent, // AppBar 배경 투명
+                elevation: 0, // 그림자 제거
+                leading: IconButton(
+                  icon: Container(
+                    width: 40, // 원의 너비
+                    height: 40, // 원의 높이
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7), // 원의 배경색
+                      shape: BoxShape.circle, // 원 모양
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white, // 화살표 아이콘 색상
+                      size: 24, // 화살표 아이콘 크기
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context); // 이전 페이지로 이동
+                  },
+                ),
+              ),
+              // 커스텀 탭 버튼
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildTabButton('내 기록', 0),
+                    _buildTabButton('전체 랭킹', 1),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: _selectedTab == 0
+                    ? _buildUserScoresTab()
+                    : _buildLeaderboardTab(),
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String title, int index) {
+    final isSelected = _selectedTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedTab = index;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? Colors.deepPurpleAccent
+                : Colors.black.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'CustomFont',
+                color: isSelected ? Colors.white : Colors.white,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -120,20 +196,53 @@ class _LeaderboardPageState extends State<LeaderboardPage>
             padding: const EdgeInsets.all(16.0),
             child: Text(
               '최고 점수: $highestScore',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'CustomFont',
+                color: Colors.deepPurpleAccent,
+              ),
             ),
           ),
         Expanded(
-          child: ListView.builder(
-            itemCount: userScores.length,
-            itemBuilder: (context, index) {
-              final score = userScores[index];
-              return ListTile(
-                title: Text('점수: ${score['score']}'),
-                subtitle: Text('시간: ${score['timestamp']}'),
-              );
-            },
-          ),
+          child: userScores.isEmpty
+              ? const Center(
+                  child: Text(
+                    '점수 기록이 없습니다.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontFamily: 'CustomFont',
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: userScores.length,
+                  itemBuilder: (context, index) {
+                    final score = userScores[index];
+                    return Card(
+                      color: Colors.black.withOpacity(0.5),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: ListTile(
+                        title: Text(
+                          '점수: ${score['score']}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'CustomFont',
+                          ),
+                        ),
+                        subtitle: Text(
+                          '시간: ${score['timestamp']}',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontFamily: 'CustomFont',
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );
@@ -146,23 +255,64 @@ class _LeaderboardPageState extends State<LeaderboardPage>
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Best Player: ${leaderboard.first['nickname']} (${leaderboard.first['dorm']}) - ${leaderboard.first['best_score']}점',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              '최고 점수: ${leaderboard.first['nickname']} (${leaderboard.first['dorm']}) - ${leaderboard.first['best_score']}점',
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'CustomFont',
+                color: Colors.deepPurpleAccent,
+              ),
             ),
           ),
         Expanded(
-          child: ListView.builder(
-            itemCount: leaderboard.length,
-            itemBuilder: (context, index) {
-              final player = leaderboard[index];
-              return ListTile(
-                // 서버에서 받은 rank 값 사용
-                leading: Text('#${player['rank']}'),
-                title: Text('${player['nickname']} (${player['dorm']})'),
-                trailing: Text('${player['best_score']}점'),
-              );
-            },
-          ),
+          child: leaderboard.isEmpty
+              ? const Center(
+                  child: Text(
+                    '랭킹 데이터가 없습니다.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontFamily: 'CustomFont',
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: leaderboard.length,
+                  itemBuilder: (context, index) {
+                    final player = leaderboard[index];
+                    return Card(
+                      color: Colors.black.withOpacity(0.5),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: ListTile(
+                        leading: Text(
+                          '#${player['rank']}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'CustomFont',
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                        title: Text(
+                          '${player['nickname']} (${player['dorm']})',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'CustomFont',
+                          ),
+                        ),
+                        trailing: Text(
+                          '${player['best_score']}점',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontFamily: 'CustomFont',
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );

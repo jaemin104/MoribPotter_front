@@ -15,17 +15,14 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '베라베르토',
         'recipe': [
           {
-            'text': '마법의 물 15g을\n10초 안에 넣으시오.',
+            'text': '불 켜고 4초 뒤에\n마법의 물 넣기',
             'image': 'assets/ingredients/magic_water.png'
           },
           {
-            'text': '기린의 혀 8g을\n5초 안에 넣으시오.',
+            'text': '그리고 5초 뒤에\n기린의 혀 넣기',
             'image': 'assets/ingredients/giraffe_tongue.png'
           },
-          {
-            'text': '약초 10g을\n10초 안에 넣으시오.',
-            'image': 'assets/ingredients/herb.png'
-          },
+          {'text': '그리고 3초 뒤에\n약초 넣기', 'image': 'assets/ingredients/herb.png'},
         ],
       },
       'rightPage': {
@@ -33,15 +30,15 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '세르펜 소르티아',
         'recipe': [
           {
-            'text': '뱀 껍질 15g을\n10초 안에 넣으시오.',
+            'text': '불 켜고 4초 뒤에\n뱀 껍질 넣기',
             'image': 'assets/ingredients/snake_skin.jpeg'
           },
           {
-            'text': '다이아몬드 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 5초 뒤에\n다이아몬드 넣기',
             'image': 'assets/ingredients/diamond.png'
           },
           {
-            'text': '드래곤의 피 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 3초 뒤에\n드래곤의 피 넣기',
             'image': 'assets/ingredients/dragon_blood.jpeg'
           },
         ],
@@ -53,15 +50,12 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '비페라 이바네스카',
         'recipe': [
           {
-            'text': '뱀의 혀 15g을\n10초 안에 넣으시오.',
+            'text': '불 켜고 4초 뒤에\n뱀의 혀 넣기',
             'image': 'assets/ingredients/snake_tongue.png'
           },
+          {'text': '그리고 5초 뒤에\n루비 넣기', 'image': 'assets/ingredients/ruby.png'},
           {
-            'text': '루비 15g을\n10초 안에 넣으시오.',
-            'image': 'assets/ingredients/ruby.png'
-          },
-          {
-            'text': '마법의 물 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 3초 뒤에\n마법의 물 넣기',
             'image': 'assets/ingredients/magic_water.png'
           },
         ],
@@ -71,15 +65,12 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '아라니아 액서메이',
         'recipe': [
           {
-            'text': '거미 다리 15g을\n10초 안에 넣으시오.',
+            'text': '불 켜고 4초 뒤에\n거미 다리 넣기',
             'image': 'assets/ingredients/spider_leg.png'
           },
+          {'text': '그리고 5초 뒤에\n약초 넣기', 'image': 'assets/ingredients/herb.png'},
           {
-            'text': '약초 15g을\n10초 안에 넣으시오.',
-            'image': 'assets/ingredients/herb.png'
-          },
-          {
-            'text': '드래곤의 뿔 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 3초 뒤에\n드래곤의 뿔 넣기',
             'image': 'assets/ingredients/dragon_horn.png'
           },
         ],
@@ -91,15 +82,15 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '에이트 슬러그스',
         'recipe': [
           {
-            'text': '달팽이 진액 15g을\n10초 안에 넣으시오.',
+            'text': '불 켜고 4초 뒤에\n달팽이 진액 넣기',
             'image': 'assets/ingredients/snail_essence.png'
           },
           {
-            'text': '드래곤 알 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 5초 뒤에\n드래곤 알 넣기',
             'image': 'assets/ingredients/dragon_egg.png'
           },
           {
-            'text': '에메랄드 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 3초 뒤에\n에메랄드 넣기',
             'image': 'assets/ingredients/emerald.png'
           },
         ],
@@ -109,15 +100,15 @@ class _TextbookPageState extends State<TextbookPage> {
         'text': '브라키움 엠멘도',
         'recipe': [
           {
-            'text': '기린의 목뼈 15g을\n10초 안에 넣으시오.',
+            'text': '불 켜고 4초 뒤에\n기린의 목뼈 넣기',
             'image': 'assets/ingredients/giraffe_bone.png'
           },
           {
-            'text': '천사의 날개 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 5초 뒤에\n천사의 날개 넣기',
             'image': 'assets/ingredients/angel_wing.png'
           },
           {
-            'text': '다이아몬드 15g을\n10초 안에 넣으시오.',
+            'text': '그리고 3초 뒤에\n다이아몬드 넣기',
             'image': 'assets/ingredients/diamond.png'
           },
         ],
@@ -166,14 +157,14 @@ class _TextbookPageState extends State<TextbookPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 36),
                     // 팝업 제목
                     Text(
                       title + " 레시피",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontFamily: 'CustomFont',
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -184,9 +175,11 @@ class _TextbookPageState extends State<TextbookPage> {
                       (ingredient) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center, // 가로 방향 중앙 정렬
+                          crossAxisAlignment:
+                              CrossAxisAlignment.center, // 세로 방향 중앙 정렬
                           children: [
-                            // 여백 추가: Row 전체를 오른쪽으로 이동
-                            //const SizedBox(width: 32), // 이동할 거리 설정
                             // 재료 이미지
                             Image.asset(
                               ingredient['image']!,
@@ -194,11 +187,12 @@ class _TextbookPageState extends State<TextbookPage> {
                               height: 100,
                               fit: BoxFit.cover,
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: 8),
                             // 재료 이름 텍스트
                             Expanded(
                               child: Text(
                                 ingredient['text']!,
+                                textAlign: TextAlign.center, // 텍스트 가운데 정렬
                                 style: const TextStyle(
                                   fontFamily: 'CustomFont',
                                   fontSize: 16,
@@ -216,7 +210,7 @@ class _TextbookPageState extends State<TextbookPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black.withOpacity(0.8),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                       onPressed: () {
@@ -322,14 +316,14 @@ class _TextbookPageState extends State<TextbookPage> {
                           Text(
                             currentData['leftPage']['text'],
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                               fontFamily: 'CustomFont',
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 20),
                           Image.asset(
                             currentData['leftPage']['image'],
                             fit: BoxFit.fitWidth,
@@ -358,14 +352,14 @@ class _TextbookPageState extends State<TextbookPage> {
                           Text(
                             currentData['rightPage']['text'],
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                               fontFamily: 'CustomFont',
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 20),
                           Image.asset(
                             currentData['rightPage']['image'],
                             fit: BoxFit.cover,
@@ -378,6 +372,24 @@ class _TextbookPageState extends State<TextbookPage> {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          Positioned(
+            bottom: 160, // 화면 아래에서 20픽셀 위에 위치
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                '레시피를 보려면\n포션을 클릭하세요', // 아래쪽 텍스트 내용
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontFamily: 'CustomFont',
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],

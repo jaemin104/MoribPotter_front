@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
         if (responseData['status'] == 'existing_user') {
           // 기존 사용자인 경우
           userState.setDorm(responseData['dorm']); // 서버에서 받은 dorm 정보 설정장
-          Navigator.pushNamed(context, '/leaderboard');
+          Navigator.pushNamed(context, '/home');
         } else if (responseData['status'] == 'new_user') {
           // 새 사용자인 경우
           final saveResponse = await http.post(
