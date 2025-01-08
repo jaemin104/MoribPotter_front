@@ -46,7 +46,7 @@ class ExamResultPage extends StatelessWidget {
     } else if (score >= 130) {
       return '이게 결과라고요?\n하루 10시간씩 공부하세요!';
     } else {
-      return '합격은커녕\n기본조차 이해하지 못한 상태입니다.\n다시 시작하세요!';
+      return '합격은 커녕\n기본조차 이해하지 못한 상태입니다.\n다시 시작하세요!';
     }
   }
 
@@ -111,6 +111,16 @@ class ExamResultPage extends StatelessWidget {
                   '$comment',
                   style: const TextStyle(
                       fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontFamily: 'CustomFont'),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  '담당교수 류네이프',
+                  style: const TextStyle(
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontFamily: 'CustomFont'),
