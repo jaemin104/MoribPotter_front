@@ -5,23 +5,67 @@ class ExamResultPage extends StatelessWidget {
   final int score;
 
   const ExamResultPage({Key? key, required this.score}) : super(key: key);
-  // const ExamResultPage({Key? key}) : super(key: key);
+
+  // Grade 계산 함수
+  String _calculateGrade(int score) {
+    if (score >= 280) {
+      return 'A+';
+    } else if (score >= 250) {
+      return 'A0';
+    } else if (score >= 230) {
+      return 'B+';
+    } else if (score >= 200) {
+      return 'B0';
+    } else if (score >= 180) {
+      return 'C+';
+    } else if (score >= 150) {
+      return 'C0';
+    } else if (score >= 130) {
+      return 'D+';
+    } else if (score >= 100) {
+      return 'D0';
+    } else {
+      return 'F';
+    }
+  }
+
+  // Comment 생성 함수
+  String _makeComment(int score) {
+    if (score >= 280) {
+      return '훌륭합니다!\n이 정도면 마법 학교 수석 졸업도 가능하겠군요.\n하지만 자만하지 마세요!';
+    } else if (score >= 250) {
+      return '좋습니다!\n하지만 아쉽게도 완벽한 점수는 아니네요.\n끝까지 집중하세요.';
+    } else if (score >= 230) {
+      return '제법입니다!\n하지만 이 정도로 만족한다면 \n더 높은 곳으로 갈 수 없습니다.';
+    } else if (score >= 200) {
+      return '그럭저럭 하긴 했지만,\n아직 갈 길이 멉니다.\n더 열심히 하세요!';
+    } else if (score >= 180) {
+      return '분발하세요!\n지금 성적으로는 마법 약재 창고나\n정리하는 일이 전부일 겁니다.';
+    } else if (score >= 150) {
+      return '이 결과로는\n마법사 면허도 받기 어렵습니다.\n복습하고 더 노력하세요.';
+    } else if (score >= 130) {
+      return '이게 결과라고요?\n하루 10시간씩 공부하세요!';
+    } else {
+      return '합격은커녕\n기본조차 이해하지 못한 상태입니다.\n다시 시작하세요!';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final grade = _calculateGrade(score);
+    final comment = _makeComment(score);
+
     return Scaffold(
       body: Stack(
         children: [
-          // 배경 이미지 (background)
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/background.webp"), // 배경 이미지 경로
-                fit: BoxFit.cover, // 화면을 채우도록 설정
+                image: AssetImage("assets/background.webp"),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          // exam_result 이미지를 배치
           Center(
             child: Image.asset(
               'assets/exam_result.png', // exam_result 이미지 경로
@@ -29,13 +73,11 @@ class ExamResultPage extends StatelessWidget {
               fit: BoxFit.contain, // 이미지 비율 유지
             ),
           ),
-          // 시험 결과 내용
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 30), // exam_result 위로 간격
-                // 타이틀
+                const SizedBox(height: 10),
                 const Text(
                   '마법 포션 시험 결과',
                   style: TextStyle(
@@ -45,48 +87,47 @@ class ExamResultPage extends StatelessWidget {
                       fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                // const SizedBox(height: 20),
-                // // 결과 항목 1
-                // _buildResultRow(
-                //   'assets/potions/potion1.png', // 포션 이미지 경로
-                //   '3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점',
-                // ),
-                // const SizedBox(height: 10),
-                // // 결과 항목 2
-                // _buildResultRow(
-                //   'assets/potions/potion2.png',
-                //   '3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점',
-                // ),
-                // const SizedBox(height: 10),
-                // // 결과 항목 3
-                // _buildResultRow(
-                //   'assets/potions/potion3.png',
-                //   '3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점',
-                // ),
-                const SizedBox(height: 20),
-                // 총점
+                const SizedBox(height: 30),
                 Text(
-                  '총점: $score',
-                  style: TextStyle(
+                  '$score/300점',
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 30),
+                Text(
+                  '$grade',
+                  style: const TextStyle(
+                      fontSize: 60,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontFamily: 'CustomFont'),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  '$comment',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontFamily: 'CustomFont'),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
-          // 홈으로 돌아가기 버튼 (고정된 위치)
           Positioned(
-            bottom: 50, // 화면 아래에서 50픽셀 위에 배치
+            bottom: 50,
             left: 0,
             right: 0,
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/home'); // home_page.dart로 이동
+                  Navigator.pushNamed(context, '/home');
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
@@ -107,50 +148,6 @@ class ExamResultPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // 결과 Row를 빌드하는 함수
-  Widget _buildResultRow(String imagePath, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center, // 가로 중앙 정렬
-      crossAxisAlignment: CrossAxisAlignment.center, // 세로 중앙 정렬
-      children: [
-        // 포션 이미지와 이름
-        Column(
-          children: [
-            Image.asset(
-              imagePath,
-              width: 80,
-              height: 80,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 5), // 이미지와 텍스트 간격
-            const Text(
-              '포션 이름', // 이미지만 아래에 텍스트 추가
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'CustomFont',
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        const SizedBox(width: 20),
-        // 포션 세부 내용
-        Flexible(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontFamily: 'CustomFont',
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

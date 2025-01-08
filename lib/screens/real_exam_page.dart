@@ -271,17 +271,16 @@ class _RealExamPageState extends State<RealExamPage> {
           _currentPotionIndex++;
           _currentPotion = _examQuestions[_currentPotionIndex];
           userInputs.clear();
-          //_randomizeIngredients();
-          //_resetTimer();
-        } else {
-          _timer?.cancel();
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ExamResultPage(score: _totalScore),
-            ),
-          );
         }
+        // else {
+        //   _timer?.cancel();
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => ExamResultPage(score: _totalScore),
+        //     ),
+        //   );
+        // }
       }
     });
   }
@@ -456,6 +455,15 @@ class _RealExamPageState extends State<RealExamPage> {
                         ),
                       );
                     }
+                    // else if (userInputs['third'] != null) {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           ExamResultPage(score: _totalScore),
+                    //     ),
+                    //   );
+                    // }
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
