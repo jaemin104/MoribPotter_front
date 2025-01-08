@@ -131,7 +131,7 @@ class HomePage extends StatelessWidget {
           // 리더보드 이미지
           buildNonClickableImage(
             imagePath: "assets/upper_wood_sign2.png",
-            top: 50,
+            top: -20,
             left: MediaQuery.of(context).size.width / 2 - 250,
           ),
           // 마법 포션 레시피 이미지
@@ -152,7 +152,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.pushNamed(context, '/leaderboard');
             },
-            top: 145,
+            top: 75,
             left: MediaQuery.of(context).size.width / 2 - 55,
           ),
           // 마법 포션 레시피 버튼
