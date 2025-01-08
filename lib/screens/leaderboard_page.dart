@@ -191,84 +191,135 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   Widget _buildUserScoresTab() {
     return Column(
-      children: [
+        children: [
         if (highestScore != null)
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              '최고 점수: $highestScore',
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'CustomFont',
-                color: Colors.deepPurpleAccent,
-              ),
-            ),
-          ),
-        Expanded(
-          child: userScores.isEmpty
-              ? const Center(
-            child: Text(
-              '점수 기록이 없습니다.',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontFamily: 'CustomFont',
-              ),
-            ),
-          )
-              : ListView.builder(
-            itemCount: userScores.length,
-            itemBuilder: (context, index) {
-              final score = userScores[index];
+    Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Text(
+        '최고 점수: $highestScore',
+        style: const TextStyle(
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'CustomFont',
+          color: Colors.deepPurpleAccent,
+        ),
+      ),
+    ),
+    Expanded(
+    child: userScores.isEmpty
+    ? const Center(
+    child: Text(
+    '점수 기록이 없습니다.',
+    style: TextStyle(
+    fontSize: 18,
+    color: Colors.white,
+    fontFamily: 'CustomFont',
+    ),
+    ),
+    )
+        : ListView.builder(
+    itemCount: userScores.length,
+    itemBuilder: (context, index) {
+    final score = userScores[index];
 
-              // 시간 포맷 변환
-              final DateTime timestamp = DateTime.parse(score['timestamp']);
-              final String formattedTime =
-              DateFormat('yyyy-MM-dd HH:mm').format(timestamp);
+    // 시간 포맷 변환
+    final DateTime timestamp =
+    DateTime.parse(score['timestamp']);
+    final String formattedTime =
+    DateFormat('yyyy-MM-dd HH:mm').format(timestamp);
 
-              return Card(
-                color: Colors.black.withOpacity(0.5),
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 8),
-                child: ListTile(
-                  title: Text(
-                    '점수: ${score['score']}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'CustomFont',
-                    ),
-                  ),
-                  subtitle: Text(
-                    '$formattedTime', // 변환된 시간 표시
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontFamily: 'CustomFont',
-                    ),
-                  ),
-                ),
-              );
-            },
+    return Card(
+      color: Colors.black.withOpacity(0.5),
+      margin: const EdgeInsets.symmetric(
+          horizontal: 16, vertical: 8),
+      child: ListTile(
+        title: Text(
+          '점수: ${score['score']}',
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'CustomFont',
           ),
         ),
-      ],
+        subtitle: Text(
+          '$formattedTime', // 변환된 시간 표시
+          style: const TextStyle(
+            color: Colors.white70,
+            fontFamily: 'CustomFont',
+          ),
+        ),
+      ),
+    );
+    },
+    ),
+    ),
+        ],
     );
   }
 
   Widget _buildLeaderboardTab() {
+    const dormNames = {
+      'h_dorm': '성실푸프',
+      's_dorm': '진리데린',
+      'g_dorm': '아름핀도르',
+      'r_dorm': '사랑클로',
+    };
+
+    const dormFlags = {
+      'h_dorm': 'assets/flags/h_flag.webp',
+      's_dorm': 'assets/flags/s_flag.webp',
+      'g_dorm': 'assets/flags/g_flag.webp',
+      'r_dorm': 'assets/flags/r_flag.webp',
+    };
+
     return Column(
       children: [
         if (leaderboard.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              '최고 점수: ${leaderboard.first['nickname']} (${leaderboard.first['dorm']}) - ${leaderboard.first['best_score']}점',
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'CustomFont',
-                color: Colors.deepPurpleAccent,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 왼쪽에 플래그 이미지
+                Image.asset(
+                  dormFlags[leaderboard.first['dorm']] ??
+                      'assets/dorms/default.webp',
+                  width: 120,
+                  height: 120,
+                ),
+                const SizedBox(width: 32),
+                // 오른쪽에 우승자 정보
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Best Player',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'CustomFont',
+                        color: Colors.deepPurpleAccent,
+                      ),
+                    ),
+                    Text(
+                      leaderboard.first['nickname'],
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'CustomFont',
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      '${leaderboard.first['best_score']}점',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'CustomFont',
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         Expanded(
@@ -302,7 +353,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     ),
                   ),
                   title: Text(
-                    '${player['nickname']} (${player['dorm']})',
+                    '${player['nickname']} (${dormNames[player['dorm']] ?? player['dorm']})',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'CustomFont',
