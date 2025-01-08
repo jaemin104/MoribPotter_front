@@ -1,14 +1,59 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../user_state.dart';
 
 class ExamResultPage extends StatelessWidget {
   final int score;
 
   const ExamResultPage({Key? key, required this.score}) : super(key: key);
-  // const ExamResultPage({Key? key}) : super(key: key);
+
+  Future<void> saveScore(String nickname, int score) async {
+    try {
+      // 닉네임으로 user_id 조회 요청
+      final userIdResponse = await http.post(
+        Uri.parse('http://172.10.7.89/auth/get_user_id'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nickname': nickname}),
+      );
+
+      if (userIdResponse.statusCode == 200) {
+        final userId = jsonDecode(userIdResponse.body)['user_id'];
+
+        // user_id와 score를 서버에 저장 요청
+        final saveScoreResponse = await http.post(
+          Uri.parse('http://172.10.7.89/scores/save'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'user_id': userId, 'score': score}),
+        );
+
+        if (saveScoreResponse.statusCode == 200) {
+          print('점수 저장 성공');
+        } else {
+          print('점수 저장 실패: ${saveScoreResponse.body}');
+        }
+      } else {
+        print('사용자 ID 조회 실패: ${userIdResponse.body}');
+      }
+    } catch (e) {
+      print('점수 저장 중 오류 발생: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final nickname = Provider.of<UserState>(context, listen: false).nickname;
+
+    // 화면 로드 후 API 호출
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (nickname != null) {
+        saveScore(nickname, score);
+      } else {
+        print('닉네임이 설정되지 않았습니다.');
+      }
+    });
+
     return Scaffold(
       body: Stack(
         children: [
@@ -45,29 +90,11 @@ class ExamResultPage extends StatelessWidget {
                       fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                // const SizedBox(height: 20),
-                // // 결과 항목 1
-                // _buildResultRow(
-                //   'assets/potions/potion1.png', // 포션 이미지 경로
-                //   '3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점',
-                // ),
-                // const SizedBox(height: 10),
-                // // 결과 항목 2
-                // _buildResultRow(
-                //   'assets/potions/potion2.png',
-                //   '3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점',
-                // ),
-                // const SizedBox(height: 10),
-                // // 결과 항목 3
-                // _buildResultRow(
-                //   'assets/potions/potion3.png',
-                //   '3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점\n3초에 다이아몬드 넣기 성공 +20점',
-                // ),
                 const SizedBox(height: 20),
                 // 총점
                 Text(
                   '총점: $score',
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -78,7 +105,7 @@ class ExamResultPage extends StatelessWidget {
               ],
             ),
           ),
-          // 홈으로 돌아가기 버튼 (고정된 위치)
+          // 홈으로 돌아가기 버튼 (기존 버튼 유지)
           Positioned(
             bottom: 50, // 화면 아래에서 50픽셀 위에 배치
             left: 0,
@@ -90,7 +117,7 @@ class ExamResultPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   backgroundColor: Colors.black.withOpacity(0.7),
                 ),
                 child: const Text(
@@ -107,50 +134,6 @@ class ExamResultPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // 결과 Row를 빌드하는 함수
-  Widget _buildResultRow(String imagePath, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center, // 가로 중앙 정렬
-      crossAxisAlignment: CrossAxisAlignment.center, // 세로 중앙 정렬
-      children: [
-        // 포션 이미지와 이름
-        Column(
-          children: [
-            Image.asset(
-              imagePath,
-              width: 80,
-              height: 80,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 5), // 이미지와 텍스트 간격
-            const Text(
-              '포션 이름', // 이미지만 아래에 텍스트 추가
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'CustomFont',
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        const SizedBox(width: 20),
-        // 포션 세부 내용
-        Flexible(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontFamily: 'CustomFont',
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
