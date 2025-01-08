@@ -166,7 +166,7 @@ class HomePage extends StatelessWidget {
           ),
           // 스네이프 교수님의 포션 시험장 버튼
           buildTextButton(
-            text: "스네이프 교수님의\n마법 포션 시험장",
+            text: "류네이프 교수님의\n마법 포션 시험장",
             onPressed: () {
               Navigator.pushNamed(context, '/potionExam');
             },
