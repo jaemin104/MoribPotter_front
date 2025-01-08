@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
 import '../user_state.dart';
 
 class LeaderboardPage extends StatefulWidget {
@@ -127,7 +128,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               // 커스텀 탭 버튼
               Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -162,7 +163,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           decoration: BoxDecoration(
             color: isSelected
                 ? Colors.deepPurpleAccent
-                : Colors.black.withOpacity(0.7),
+                : Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -207,42 +208,48 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         Expanded(
           child: userScores.isEmpty
               ? const Center(
-                  child: Text(
-                    '점수 기록이 없습니다.',
-                    style: TextStyle(
-                      fontSize: 18,
+            child: Text(
+              '점수 기록이 없습니다.',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontFamily: 'CustomFont',
+              ),
+            ),
+          )
+              : ListView.builder(
+            itemCount: userScores.length,
+            itemBuilder: (context, index) {
+              final score = userScores[index];
+
+              // 시간 포맷 변환
+              final DateTime timestamp = DateTime.parse(score['timestamp']);
+              final String formattedTime =
+              DateFormat('yyyy-MM-dd HH:mm').format(timestamp);
+
+              return Card(
+                color: Colors.black.withOpacity(0.5),
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+                child: ListTile(
+                  title: Text(
+                    '점수: ${score['score']}',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'CustomFont',
                     ),
                   ),
-                )
-              : ListView.builder(
-                  itemCount: userScores.length,
-                  itemBuilder: (context, index) {
-                    final score = userScores[index];
-                    return Card(
-                      color: Colors.black.withOpacity(0.5),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ListTile(
-                        title: Text(
-                          '점수: ${score['score']}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'CustomFont',
-                          ),
-                        ),
-                        subtitle: Text(
-                          '시간: ${score['timestamp']}',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontFamily: 'CustomFont',
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                  subtitle: Text(
+                    '$formattedTime', // 변환된 시간 표시
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontFamily: 'CustomFont',
+                    ),
+                  ),
                 ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -267,52 +274,52 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         Expanded(
           child: leaderboard.isEmpty
               ? const Center(
-                  child: Text(
-                    '랭킹 데이터가 없습니다.',
-                    style: TextStyle(
+            child: Text(
+              '랭킹 데이터가 없습니다.',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontFamily: 'CustomFont',
+              ),
+            ),
+          )
+              : ListView.builder(
+            itemCount: leaderboard.length,
+            itemBuilder: (context, index) {
+              final player = leaderboard[index];
+              return Card(
+                color: Colors.black.withOpacity(0.5),
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+                child: ListTile(
+                  leading: Text(
+                    '#${player['rank']}',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'CustomFont',
+                      color: Colors.deepPurpleAccent,
+                    ),
+                  ),
+                  title: Text(
+                    '${player['nickname']} (${player['dorm']})',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'CustomFont',
+                    ),
+                  ),
+                  trailing: Text(
+                    '${player['best_score']}점',
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
                       fontFamily: 'CustomFont',
                     ),
                   ),
-                )
-              : ListView.builder(
-                  itemCount: leaderboard.length,
-                  itemBuilder: (context, index) {
-                    final player = leaderboard[index];
-                    return Card(
-                      color: Colors.black.withOpacity(0.5),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ListTile(
-                        leading: Text(
-                          '#${player['rank']}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'CustomFont',
-                            color: Colors.deepPurpleAccent,
-                          ),
-                        ),
-                        title: Text(
-                          '${player['nickname']} (${player['dorm']})',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'CustomFont',
-                          ),
-                        ),
-                        trailing: Text(
-                          '${player['best_score']}점',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontFamily: 'CustomFont',
-                          ),
-                        ),
-                      ),
-                    );
-                  },
                 ),
+              );
+            },
+          ),
         ),
       ],
     );
