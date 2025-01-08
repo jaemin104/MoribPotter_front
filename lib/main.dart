@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/survey',
+      initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const HomePage(), // 홈 화면
@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
         '/leaderboard': (context) => const LeaderboardPage(),
         // '/examResultPage': (context) => const ExamResultPage(),
       },
+      //
       onGenerateRoute: (settings) {
         if (settings.name == '/examResultPage') {
           final args = settings.arguments as int; // 전달받은 점수

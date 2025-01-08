@@ -96,21 +96,21 @@ class _RealExamPageState extends State<RealExamPage> {
   ];
 
   final List<Map<String, double>> _positions = [
-    {'top': 350.0, 'left': 55.0},
-    {'top': 350.0, 'left': 137.0},
-    {'top': 345.0, 'left': 220.0},
-    {'top': 350.0, 'left': 305.0},
-    {'top': 345.0, 'left': 385.0},
-    {'top': 480.0, 'left': 55.0},
-    {'top': 480.0, 'left': 137.0},
-    {'top': 480.0, 'left': 220.0},
-    {'top': 470.0, 'left': 303.0},
-    {'top': 480.0, 'left': 385.0},
-    {'top': 620.0, 'left': 55.0},
-    {'top': 620.0, 'left': 137.0},
-    {'top': 625.0, 'left': 215.0},
-    {'top': 620.0, 'left': 303.0},
-    {'top': 620.0, 'left': 385.0},
+    {'top': 280.0, 'left': 50.0}, //첫번째줄
+    {'top': 280.0, 'left': 118.0},
+    {'top': 280.0, 'left': 187.0},
+    {'top': 280.0, 'left': 257.0},
+    {'top': 280.0, 'left': 323.0},
+    {'top': 393.0, 'left': 50.0}, //두번째줄
+    {'top': 393.0, 'left': 118.0},
+    {'top': 393.0, 'left': 187.0},
+    {'top': 393.0, 'left': 257.0},
+    {'top': 393.0, 'left': 323.0},
+    {'top': 510.0, 'left': 50.0}, //세번째줄
+    {'top': 510.0, 'left': 115.0},
+    {'top': 510.0, 'left': 184.0},
+    {'top': 510.0, 'left': 257.0},
+    {'top': 510.0, 'left': 323.0},
   ];
 
   List<Map<String, dynamic>> _randomizedIngredients = [];
@@ -151,6 +151,12 @@ class _RealExamPageState extends State<RealExamPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        // 포션 리스트를 파싱하여 원하는 형식으로 변환
+        final formattedQuestions = _examQuestions
+            .map((potion) => '$potion,')
+            .join('\n')
+            .replaceFirstMapped(RegExp(r',$'), (match) => '을\n만드시오.');
+
         return Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
@@ -166,22 +172,30 @@ class _RealExamPageState extends State<RealExamPage> {
             ),
             child: Column(
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
                 Text(
-                  '현재 문제: $_examQuestions',
+                  '$formattedQuestions',
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
+                //const SizedBox(height: 10),
+                TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                     if (_timer == null || !_timer!.isActive) {
                       _startTimer();
                     }
                   },
-                  child: const Text('닫기'),
+                  child: const Text(
+                    '닫기',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black, // 텍스트 색상
+                        fontFamily: 'CustomFont'),
+                  ),
                 ),
               ],
             ),
@@ -341,15 +355,6 @@ class _RealExamPageState extends State<RealExamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Potion Exam'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.question_mark),
-            onPressed: _showCustomDialog,
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           Container(
@@ -360,14 +365,34 @@ class _RealExamPageState extends State<RealExamPage> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.topCenter,
+          Positioned(
+            top: 32, // 화면 상단에서 16픽셀 아래
+            right: 8, // 화면 오른쪽에서 16픽셀 왼쪽
+            child: TextButton(
+              onPressed: _showCustomDialog, // 다이얼로그 표시
+              child: const Text(
+                '시험 문제',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white, // 버튼 텍스트 색상
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'CustomFont',
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 80, // 화면 위에서 30 떨어짐
+            left: 0,
+            right: 0,
             child: Text(
               '${_elapsedTime ~/ 60}분 ${_elapsedTime % 60}초',
+              textAlign: TextAlign.center, // 가운데 정렬
               style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                  color: Colors.white,
+                  fontFamily: 'CustomFont'),
             ),
           ),
           Align(
@@ -382,38 +407,71 @@ class _RealExamPageState extends State<RealExamPage> {
                 );
               },
               onAccept: (data) {
+                // 기존 스낵바를 즉시 닫음
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                // 새 스낵바 표시
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('$data 추가됨!')),
+                  SnackBar(
+                    content: Text(
+                      '$data 추가됨!',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.white, // 텍스트 색상
+                          fontWeight: FontWeight.bold, // 텍스트 굵기 (선택 사항)
+                          fontSize: 12,
+                          fontFamily: 'CustomFont'),
+                    ),
+                    backgroundColor: Colors.black.withOpacity(0.5), // 스낵바 배경색
+                    duration: const Duration(seconds: 2), // 스낵바 표시 시간
+                  ),
                 );
+
+                // 재료 추가 로직
                 _recordIngredient(data, _elapsedTime);
               },
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_currentButtonIndex < 2) {
-                    setState(() {
-                      _currentButtonIndex++;
-                      _randomizeIngredients();
-                      _resetTimer();
-                    });
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ExamResultPage(score: _totalScore),
-                      ),
-                    );
-                  }
-                },
-                child: Text(
-                  _buttonTexts[_currentButtonIndex],
-                  textAlign: TextAlign.center,
+          Positioned(
+            bottom: 90,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20), // 버튼 위치 조정
+                child: TextButton(
+                  onPressed: () {
+                    if (_currentButtonIndex < 2) {
+                      setState(() {
+                        _currentButtonIndex++;
+                        _randomizeIngredients();
+                        _resetTimer();
+                      });
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ExamResultPage(score: _totalScore),
+                        ),
+                      );
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8), // 최소 패딩
+                    backgroundColor: Colors.transparent, // 버튼 배경색
+                    foregroundColor: Colors.deepPurpleAccent, // 텍스트 색상
+                    textStyle: const TextStyle(
+                        fontSize: 18, // 폰트 크기
+                        fontWeight: FontWeight.bold, // 폰트 굵기
+                        fontFamily: 'CustomFont', // 커스텀 폰트
+                        color: Colors.deepPurpleAccent),
+                  ),
+                  child: Text(
+                    _buttonTexts[_currentButtonIndex],
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
