@@ -35,29 +35,22 @@ A new Flutter project.
 ### 3.1. 로그인
 - 카카오 소셜 로그인으로 쉽게 로그인 할 수 있어요.
 - DB에 저장된 유저라면 바로 기숙사로 가고, 새로운 유저라면 기숙사를 배정받으러 가요.
+- 
 ### 3.2. 기숙사 배정
 - 모립포터에는 아름핀도르, 진리데린, 성실푸프, 사랑클로라는 4개의 기숙사가 있어요.
 - 새로운 유저인 경우 성격 검사를 통해 가장 잘 맞을 것 같은 기숙사에 배정해 드릴게요.
+- 
 ### 3.3. 기숙사 방(홈 화면)
 - 배정받은 기숙사 방을 둘러보세요.
 - 표지판을 클릭하면 도서관, 시험장으로 이동할 수 있어요.
 - 리더보드 표지판을 클릭하면 내 기록과 전체 랭킹을 볼 수 있어요.
+- 
 ### 3.4. 마법 포션 레시피 족보 도서관
-
-![TalkMedia_i_c7b779e93859.jpg.jpg](https://prod-files-secure.s3.us-west-2.amazonaws.com/f6cb388f-3934-47d6-9928-26d2e10eb0fc/e25ba605-a5fc-4062-8123-67c2bbfb2075/TalkMedia_i_c7b779e93859.jpg.jpg)
-
-![자습실 gif.gif](https://prod-files-secure.s3.us-west-2.amazonaws.com/f6cb388f-3934-47d6-9928-26d2e10eb0fc/954b6b88-4a03-49e7-8c47-fbe615e5d39f/%EC%9E%90%EC%8A%B5%EC%8B%A4_gif.gif)
-
 - 엇! 이 책은 뭐지?
 - 포션을 클릭하면 넣어야 하는 재료와 시간 등 정확한 레시피를 볼 수 있어요.
 - 레시피를 열심히 암기한 뒤 시험장으로 가세요.
 
 ### 3.5. 류네이프 교수님의 마법 포션 시험장
-
-![KakaoTalk_20250108_200054289-ezgif.com-video-to-gif-converter.gif](https://prod-files-secure.s3.us-west-2.amazonaws.com/f6cb388f-3934-47d6-9928-26d2e10eb0fc/51400efd-c599-4108-a8b6-6fa234755c64/KakaoTalk_20250108_200054289-ezgif.com-video-to-gif-converter.gif)
-
-![결과 사진.jpg](https://prod-files-secure.s3.us-west-2.amazonaws.com/f6cb388f-3934-47d6-9928-26d2e10eb0fc/94901c9d-66cd-4830-bc20-1d42460c5e4d/%EA%B2%B0%EA%B3%BC_%EC%82%AC%EC%A7%84.jpg)
-
 - 포션 3개가 랜덤으로 문제에 나와요.
 - 재료를 드래그해서 정확한 시간에 냄비에 넣고 정확한 시간에 제출하기 버튼을 누릅니다.
 - 포션을 하나 만들 때마다 재료의 위치가 바뀌니 주의하세요!
@@ -66,11 +59,6 @@ A new Flutter project.
 - 성적이 낮다면 다시 도서관에 가서 공부하세요…!
 
 ### 3.6. 리더보드
-
-![TalkMedia_i_a695444291f9.jpg.jpg](https://prod-files-secure.s3.us-west-2.amazonaws.com/f6cb388f-3934-47d6-9928-26d2e10eb0fc/3b351dc9-f4ad-458c-a9c1-b7b7b91b0ec4/TalkMedia_i_a695444291f9.jpg.jpg)
-
-![TalkMedia_i_debb5280a7c4.jpg.jpg](https://prod-files-secure.s3.us-west-2.amazonaws.com/f6cb388f-3934-47d6-9928-26d2e10eb0fc/0142872e-20e3-4307-a2d7-f0fd78638f5b/TalkMedia_i_debb5280a7c4.jpg.jpg)
-
 - 리더보드에서 내 성적 변화를 확인해 보세요.
 - 전체 랭킹 탭에서는 다른 사람들의 최고 성적도 볼 수 있어요.
 
