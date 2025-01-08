@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../user_state.dart';
 
 class ExamResultPage extends StatelessWidget {
   final int score;
 
   const ExamResultPage({Key? key, required this.score}) : super(key: key);
+
 
   // Grade 계산 함수
   String _calculateGrade(int score) {
@@ -47,13 +51,56 @@ class ExamResultPage extends StatelessWidget {
       return '이게 결과라고요?\n하루 10시간씩 공부하세요!';
     } else {
       return '합격은 커녕\n기본조차 이해하지 못한 상태입니다.\n다시 시작하세요!';
+
+  Future<void> saveScore(String nickname, int score) async {
+    try {
+      // 닉네임으로 user_id 조회 요청
+      final userIdResponse = await http.post(
+        Uri.parse('http://172.10.7.89/auth/get_user_id'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nickname': nickname}),
+      );
+
+      if (userIdResponse.statusCode == 200) {
+        final userId = jsonDecode(userIdResponse.body)['user_id'];
+
+        // user_id와 score를 서버에 저장 요청
+        final saveScoreResponse = await http.post(
+          Uri.parse('http://172.10.7.89/scores/save'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'user_id': userId, 'score': score}),
+        );
+
+        if (saveScoreResponse.statusCode == 200) {
+          print('점수 저장 성공');
+        } else {
+          print('점수 저장 실패: ${saveScoreResponse.body}');
+        }
+      } else {
+        print('사용자 ID 조회 실패: ${userIdResponse.body}');
+      }
+    } catch (e) {
+      print('점수 저장 중 오류 발생: $e');
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
     final grade = _calculateGrade(score);
     final comment = _makeComment(score);
+    final nickname = Provider.of<UserState>(context, listen: false).nickname;
+
+    // 화면 로드 후 API 호출
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (nickname != null) {
+        saveScore(nickname, score);
+      } else {
+        print('닉네임이 설정되지 않았습니다.');
+      }
+    });
+
 
     return Scaffold(
       body: Stack(
@@ -87,9 +134,16 @@ class ExamResultPage extends StatelessWidget {
                       fontFamily: 'CustomFont'),
                   textAlign: TextAlign.center,
                 ),
+
                 const SizedBox(height: 30),
                 Text(
                   '$score/300점',
+
+                const SizedBox(height: 20),
+                // 총점
+                Text(
+                  '총점: $score',
+
                   style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -130,6 +184,10 @@ class ExamResultPage extends StatelessWidget {
               ],
             ),
           ),
+
+
+          // 홈으로 돌아가기 버튼 (기존 버튼 유지)
+
           Positioned(
             bottom: 50,
             left: 0,
@@ -141,7 +199,7 @@ class ExamResultPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   backgroundColor: Colors.black.withOpacity(0.7),
                 ),
                 child: const Text(
